@@ -1,0 +1,6 @@
+# Docusaurus build output — built fresh by CI on every deploy
+docs/
+
+# Docusaurus local dev
+docs-src/.docusaurus/
+docs-src/node_modules/

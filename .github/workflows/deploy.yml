@@ -8,6 +8,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: docs-src/package-lock.json
+
+      - name: Install Docusaurus dependencies
+        run: npm ci
+        working-directory: docs-src
+
+      - name: Build Docusaurus docs
+        run: npm run build
+        working-directory: docs-src
+
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
@@ -21,5 +36,6 @@ jobs:
             --exclude '.git' \
             --exclude '.github' \
             --exclude 'README.md' \
+            --exclude 'docs-src' \
             -e "ssh -i ~/.ssh/id_ed25519 -p 22" \
             ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PATH }}

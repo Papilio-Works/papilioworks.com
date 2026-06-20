@@ -1,5 +1,6 @@
 # Docusaurus build output — built fresh by CI on every deploy
-docs/
+# Leading / anchors this to the repo root, so docs-src/docs/ is NOT excluded
+/docs/
 
 # Docusaurus local dev
 docs-src/.docusaurus/

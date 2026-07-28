@@ -28,7 +28,7 @@ Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com
 
 - ESP32-S3 SuperMini (not yet plugged into the Retrocade for this step)
 - USB-C cable
-- Computer with a USB port
+- Computer with a USB port and **Python 3.12+** installed
 - The FPGA-Companion firmware binary (`.bin` file)
 
 ---
@@ -44,35 +44,36 @@ Download links and version information will be added here once the first release
 
 ---
 
-## Step 2: Install the Flashing Tool
+## Step 2: Install Papilio Loader
 
-:::note Content Coming Soon
-Tool installation instructions for Windows, Mac, and Linux will be added here.
-:::
+Papilio Loader is the official tool for flashing Papilio hardware. Install it with pip — this works on Windows, Mac, and Linux:
 
-**Option A — Web Flash (recommended, no install needed)**
-- Use the browser-based flasher at `papilioworks.com/flash` *(coming soon)*
-- Connect your ESP32-S3 via USB-C, click Flash
-
-**Option B — esptool.py (command line)**
 ```bash
-pip install esptool
-esptool.py --chip esp32s3 --port COM3 write_flash 0x0 fpga-companion-retrocade-esp32s3.bin
+pip install papilio-loader-mcp
 ```
-*(Replace `COM3` with your actual port — `/dev/ttyUSB0` on Linux, `/dev/cu.usbserial-*` on Mac)*
+
+Once installed, start the Papilio Loader server:
+
+```bash
+python -m papilio_loader_mcp.api
+```
+
+Then open your browser to **[http://localhost:8000/web/upload](http://localhost:8000/web/upload)**. You should see the Device Flash Manager:
+
+![Papilio Loader Device Flash Manager](../../static/img/papilio-loader/upload.png)
+
+:::tip
+Don't have Python? Download it from [python.org](https://www.python.org/downloads/) — Python 3.12 or newer is required.
+:::
 
 ---
 
 ## Step 3: Flash the Firmware
 
-:::note Content Coming Soon
-Step-by-step screenshots will be added here.
-:::
-
 1. Hold the **BOOT button** on the ESP32-S3 SuperMini
 2. Plug in the USB-C cable while holding BOOT
 3. Release BOOT after 2 seconds — the device is now in bootloader mode
-4. Run the flash command (or use the web flasher)
+4. In the Papilio Loader web UI, under **ESP32 Flash**, select **USB/Serial**, choose your serial port, click to select the `.bin` file you downloaded, and click **Flash ESP32**
 5. Wait for the flash to complete (~30 seconds)
 6. Unplug and replug USB-C — the green LED should blink
 

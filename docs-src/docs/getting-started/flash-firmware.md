@@ -28,7 +28,7 @@ Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com
 
 - ESP32-S3 SuperMini (not yet plugged into the Retrocade for this step)
 - USB-C cable
-- Computer with a USB port and **Python 3.12+** installed
+- Computer with a USB port (Windows users can use the one-click installer; Mac/Linux need **Python 3.12+**)
 - The FPGA-Companion firmware binary (`.bin` file)
 
 ---
@@ -46,28 +46,28 @@ Download links and version information will be added here once the first release
 
 ## Step 2: Install Papilio Loader
 
-Papilio Loader is the official tool for flashing Papilio hardware. Install it with pip — this works on Windows, Mac, and Linux:
+Papilio Loader is the official tool for flashing Papilio hardware.
+
+**Windows users:** the easiest route is the one-click installer — no Python needed. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases), install it, launch **Papilio Loader** from the Start Menu, then right-click the system tray icon and choose **Open Web Interface**.
+
+**Mac, Linux, or pip users:** install the Python package instead (requires Python 3.12+):
 
 ```bash
 pip install papilio-loader-mcp
 ```
 
-Once installed, start the Papilio Loader server:
+Then start the Papilio Loader server:
 
 ```bash
 python -m papilio_loader_mcp.api
 ```
 
-Then open your browser to **[http://localhost:8000/web/upload](http://localhost:8000/web/upload)**. You should see the Device Flash Manager:
+Either way, open your browser to **[http://localhost:8000/web/upload](http://localhost:8000/web/upload)**. You should see the Device Flash Manager:
 
 ![Papilio Loader Device Flash Manager](../../static/img/papilio-loader/upload.png)
 
 :::tip
 Papilio Loader can do a lot more than first-time flashing — OTA updates over WiFi, a saved firmware library, live WiFi logs, and an API. See the full [Papilio Loader documentation](../papilio-loader/index.md).
-:::
-
-:::tip
-Don't have Python? Download it from [python.org](https://www.python.org/downloads/) — Python 3.12 or newer is required.
 :::
 
 ---

@@ -36,7 +36,37 @@ All three run simultaneously from a single server process.
 
 ## Installation
 
-Papilio Loader is a Python package, so installation is identical on Windows, Mac, and Linux:
+There are two ways to install Papilio Loader:
+
+| Method | Platforms | Best For |
+|---|---|---|
+| **Windows Installer** | Windows 10/11 (64-bit) | One-click setup, no Python required |
+| **Python Package** | Windows, Mac, Linux | Cross-platform, scripting, always up to date via pip |
+
+### Option A: Windows Installer (Recommended for Windows)
+
+No Python required — everything is bundled into a standard desktop app:
+
+1. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases)
+2. Run the installer. During setup you can optionally enable:
+   - **Create a desktop icon**
+   - **Run at Windows startup** — the loader is always ready in your system tray
+   - **Add pesptool.exe and esptool.exe to system PATH** — use the flashing tools directly from any command prompt
+3. Launch **Papilio Loader** from the Start Menu
+4. A system tray icon appears — right-click it and choose **Open Web Interface**
+
+The installer also adds Start Menu shortcuts for:
+
+- **Papilio Loader (Debug Console)** — runs the app with a visible console window so you can see server output, handy for troubleshooting
+- **pesptool / esptool Command Prompt** — opens a command prompt with the standalone flashing tools ready to use
+
+:::note
+The desktop app runs the exact same server and web UI described throughout these docs — only the way you start it differs.
+:::
+
+### Option B: Python Package (Windows, Mac, Linux)
+
+Install with pip — identical on every platform:
 
 ```bash
 pip install papilio-loader-mcp
@@ -50,11 +80,15 @@ Don't have Python? Download it from [python.org](https://www.python.org/download
 
 ## Starting the Server
 
+**Desktop app:** launch Papilio Loader from the Start Menu (or let it start with Windows), then right-click the tray icon and choose **Open Web Interface**.
+
+**Python package:** run the server from a terminal:
+
 ```bash
 python -m papilio_loader_mcp.api
 ```
 
-Then open your browser to **[http://localhost:8000/web/upload](http://localhost:8000/web/upload)**. You should see the Device Flash Manager:
+Either way, the web interface lives at **[http://localhost:8000/web/upload](http://localhost:8000/web/upload)**. You should see the Device Flash Manager:
 
 ![Papilio Loader Device Flash Manager](../../static/img/papilio-loader/upload.png)
 
@@ -79,12 +113,6 @@ export PAPILIO_WEB_PASSWORD=a_strong_password
 With authentication enabled, you'll see a login screen before the flash manager:
 
 ![Papilio Loader login page](../../static/img/papilio-loader/login.png)
-
----
-
-## Desktop App (Windows)
-
-Prefer a one-click installer? A Windows desktop app with system-tray integration is available from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases). Install it, launch from the Start Menu, then right-click the tray icon and choose **Open Web Interface**. It runs the same server and web UI described in these docs.
 
 ---
 

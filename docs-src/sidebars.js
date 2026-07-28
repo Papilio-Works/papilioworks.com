@@ -17,6 +17,18 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Papilio Loader',
+      items: [
+        'papilio-loader/index',
+        'papilio-loader/flashing-devices',
+        'papilio-loader/saved-files-library',
+        'papilio-loader/wifi-log-monitor',
+        'papilio-loader/api-and-automation',
+        'papilio-loader/troubleshooting',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Cores',
       items: [
         'cores/atari-2600',

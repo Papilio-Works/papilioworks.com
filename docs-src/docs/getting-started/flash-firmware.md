@@ -63,6 +63,10 @@ Then open your browser to **[http://localhost:8000/web/upload](http://localhost:
 ![Papilio Loader Device Flash Manager](../../static/img/papilio-loader/upload.png)
 
 :::tip
+Papilio Loader can do a lot more than first-time flashing — OTA updates over WiFi, a saved firmware library, live WiFi logs, and an API. See the full [Papilio Loader documentation](../papilio-loader/index.md).
+:::
+
+:::tip
 Don't have Python? Download it from [python.org](https://www.python.org/downloads/) — Python 3.12 or newer is required.
 :::
 

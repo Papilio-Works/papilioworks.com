@@ -90,9 +90,12 @@ def capture(base_url: str, out_dir: Path) -> list[Path]:
         browser = p.chromium.launch()
         page = browser.new_page(viewport=VIEWPORT)
 
-        def shot(name: str) -> None:
+        def shot(name: str, selector: str | None = None) -> None:
             path = out_dir / f"{name}.png"
-            page.screenshot(path=str(path), full_page=True)
+            if selector:
+                page.locator(selector).screenshot(path=str(path))
+            else:
+                page.screenshot(path=str(path), full_page=True)
             saved.append(path)
             print(f"  captured {path.name}")
 
@@ -108,11 +111,45 @@ def capture(base_url: str, out_dir: Path) -> list[Path]:
         else:
             print("  auth disabled on this server - skipping login page")
 
-        # 2. Upload (main flashing) page
+        # 2. Upload (main flashing) page - full view
         page.goto(f"{base_url}/web/upload", wait_until="networkidle")
         shot("upload")
 
-        # 3. WiFi log page (streams SSE, so networkidle never fires)
+        # 3. FPGA card (OTA mode is default)
+        fpga_card = ".cards-container .card:nth-child(1)"
+        esp32_card = ".cards-container .card:nth-child(2)"
+        shot("fpga-card-ota", fpga_card)
+        shot("esp32-card-ota", esp32_card)
+
+        # 4. FPGA card in USB/Serial mode with Advanced Options expanded
+        page.click(f"{fpga_card} .flash-method-option:nth-child(1)")
+        page.click(f"{fpga_card} .advanced-toggle")
+        page.wait_for_timeout(500)
+        shot("fpga-card-usb-advanced", fpga_card)
+        # restore
+        page.click(f"{fpga_card} .advanced-toggle")
+
+        # 5. Save-to-library fields (checkbox reveals filename/description)
+        page.check("#esp32SaveFile")
+        page.wait_for_timeout(300)
+        shot("esp32-card-save-library", esp32_card)
+        page.uncheck("#esp32SaveFile")
+
+        # 6. Saved Files Library expanded
+        page.click(".saved-files-toggle")
+        page.wait_for_timeout(500)
+        shot("saved-files-library", "#savedFilesSection")
+        page.click(".saved-files-toggle")
+
+        # 7. WiFi log monitor section expanded (on upload page)
+        page.click(".wifi-log-toggle")
+        page.wait_for_timeout(500)
+        shot("wifi-log-section", "#wifiLogSection")
+
+        # 8. Status log area
+        shot("status-log", ".status-log-card" if page.locator(".status-log-card").count() else "#statusLog")
+
+        # 9. WiFi log page (streams SSE, so networkidle never fires)
         page.goto(f"{base_url}/web/wifi-log", wait_until="domcontentloaded")
         page.wait_for_timeout(1500)  # let the page render
         shot("wifi-log")

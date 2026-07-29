@@ -32,7 +32,7 @@ Along the top edge, left to right: ESP32-S3 SuperMini header, USB-C power input,
 
 ---
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Schematic reference, CST file pinout, and PCB dimension drawing will be added here.
 
 Hardware design files are open source at: [github.com/Papilio-Retrocade/papilio_retrocade_hardware](https://github.com/Papilio-Retrocade)

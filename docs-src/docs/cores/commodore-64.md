@@ -17,7 +17,7 @@ Based on [C64Nano](https://github.com/Papilio-Retrocade/C64Nano) — ported to t
 
 ## Compatibility
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 ROM and disk image compatibility details will be added here.
 :::
 
@@ -36,13 +36,13 @@ The C64 core supports USB HID keyboards via the ESP32-S3 USB port. Connect a USB
 
 ## Controls
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Joystick button mapping for Xbox/PS4/PS5 will be added here. The C64 used a 1-button joystick — mapping is straightforward.
 :::
 
 ## Known Issues
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Known issues and workarounds will be listed here as they are identified.
 :::
 

@@ -29,7 +29,7 @@ Original Xbox One controllers (pre-Series) use a proprietary wireless protocol a
 
 ## Pairing a Bluetooth Controller
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 OSD screenshots for the pairing process will be added here.
 :::
 
@@ -61,7 +61,7 @@ OSD screenshots for the pairing process will be added here.
 
 ## Button Mapping
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Default button mapping tables for each core (A2600, C64) will be added here.
 :::
 
@@ -73,7 +73,7 @@ Default mapping varies by core. The OSD menu allows remapping all buttons.
 
 Plug into the **USB-C port** on the ESP32-S3 SuperMini using a USB-C adapter or OTG cable. USB HID devices are recognized automatically — no pairing needed.
 
-:::tip C64 Users
+:::tip[C64 Users]
 A USB keyboard is very useful for the C64 core, which supports full keyboard input for BASIC and games that use keyboard controls.
 :::
 

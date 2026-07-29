@@ -11,7 +11,7 @@ How to port an existing FPGA retro core to the Papilio Retrocade, or develop a n
 
 ---
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 The complete core porting guide will be written here, covering:
 
 - Understanding the Retrocade CST (constraint) file and pin assignments

@@ -11,7 +11,7 @@ Known issues and workarounds for the Papilio Retrocade.
 
 ---
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 This page will be updated as issues are identified during the beta program. Check [community.papilioworks.com](https://community.papilioworks.com) for the latest known issues.
 :::
 

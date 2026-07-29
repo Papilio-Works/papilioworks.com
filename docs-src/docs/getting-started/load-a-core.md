@@ -35,7 +35,7 @@ FPGA-Companion does not currently have an in-menu WiFi setup screen — there's 
 
 The official pre-built release (`fpga-companion-esp32s3-v1.0.1-merged.bin`) ships with a **placeholder SSID** and will never connect to a real network. This is intentional — the maintainers don't bake real credentials into a public binary.
 
-:::tip Most users can skip WiFi entirely
+:::tip[Most users can skip WiFi entirely]
 Loading cores from an SD card (**Step 3, Option A** below) works fully offline and needs no WiFi at all. Only use the steps below if you specifically want OTA core pushing or remote WiFi logging.
 :::
 
@@ -68,7 +68,7 @@ FPGA-Companion checks the ESP32's NVS flash partition for a WiFi override at boo
 This NVS partition is separate from the application firmware, so future OTA or USB firmware updates won't erase your WiFi credentials.
 :::
 
-:::note Advanced: building from source
+:::note[Advanced: building from source]
 You can still bake credentials into a custom build via `sdkconfig.defaults.local` if you prefer — see `src/esp32/README.md` in the [FPGA-Companion repo](https://github.com/Papilio-Retrocade/FPGA-Companion). For most users the esptool/NVS method above is simpler and doesn't require installing ESP-IDF.
 :::
 
@@ -76,7 +76,7 @@ You can still bake credentials into a custom build via `sdkconfig.defaults.local
 
 ## Step 2: Download Core Bitfiles
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Direct download links for each core will be added here once the first release is published.
 :::
 
@@ -95,7 +95,7 @@ Download from: [https://github.com/Papilio-Retrocade](https://github.com/Papilio
 
 ## Step 3: Load via OSD Menu
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 OSD menu navigation screenshots will be added here.
 :::
 

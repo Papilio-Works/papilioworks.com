@@ -24,7 +24,7 @@ The SD card holds your ROM files and FPGA core bitfiles. Setting it up correctly
 
 ## Step 1: Format as FAT32
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Screenshots for Windows, Mac, and Linux formatting will be added here.
 :::
 
@@ -72,7 +72,7 @@ Drop your ROM files into the appropriate folder:
 | SNES | `/snes/` | `.sfc`, `.smc` |
 | NES | `/nes/` | `.nes` |
 
-:::note ROMs Are Not Included
+:::note[ROMs Are Not Included]
 ROM files are copyrighted. You'll need to source your own. Many classic games have been officially released as freeware — check [atariage.com](https://atariage.com) for public domain Atari 2600 homebrew.
 :::
 

@@ -44,7 +44,7 @@ This merged image bundles the bootloader, partition table, and application into 
 Advanced users who prefer to flash the bootloader, partition table, and app as separate files (e.g. for OTA-only application updates) can instead download `fpga-companion-esp32s3-v1.0.1.zip`, which contains the individual binaries and their flash offsets — see the release notes on the [releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) for details.
 :::
 
-:::warning No WiFi out of the box
+:::warning[No WiFi out of the box]
 The pre-built binary ships with a **placeholder WiFi SSID** — it will not connect to your network. WiFi is only needed for OTA core pushing and remote logging; USB flashing and SD-card core loading work fully offline. If you want WiFi features, see [Connect to WiFi](./load-a-core#step-1-wifi-is-optional-and-not-yet-configurable-from-the-osd) on the next page for how to build your own binary with real credentials.
 :::
 

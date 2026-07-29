@@ -40,7 +40,7 @@ Approximate price: $25–35 USD.
 
 ---
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Detailed I/O mapping, JTAG pinout, and Gowin EDA toolchain setup instructions will be added here.
 :::
 

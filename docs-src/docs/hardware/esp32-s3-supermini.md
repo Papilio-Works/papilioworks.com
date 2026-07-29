@@ -56,7 +56,7 @@ Verify the board has USB-C and the ESP32-S3 chip (not S2 or C3). The "SuperMini"
 
 ---
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 Pin mapping to the Retrocade header and FPGA-Companion firmware configuration details will be added here.
 :::
 

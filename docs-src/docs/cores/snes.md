@@ -15,7 +15,7 @@ Based on [SNESTang](https://github.com/nand2mario/snestang) by nand2mario — be
 
 ---
 
-:::note Coming Soon
+:::note[Coming Soon]
 The SNES core is currently in active development. This page will be updated when the core is available for the Retrocade.
 
 Follow progress at [GitHub](https://github.com/Papilio-Retrocade) or join the discussion at [community.papilioworks.com](https://community.papilioworks.com).

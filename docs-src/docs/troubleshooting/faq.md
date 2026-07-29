@@ -11,7 +11,7 @@ Quick answers to the most common problems.
 
 ---
 
-:::note Content Coming Soon
+:::note[Content Coming Soon]
 This FAQ will be populated from real support questions as they come in. Check back after launch, or ask your question at [community.papilioworks.com](https://community.papilioworks.com).
 :::
 

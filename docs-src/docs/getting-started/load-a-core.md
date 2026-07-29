@@ -39,36 +39,37 @@ The official pre-built release (`fpga-companion-esp32s3-v1.0.0-merged.bin`) ship
 Loading cores from an SD card (**Step 3, Option A** below) works fully offline and needs no WiFi at all. Only use the steps below if you specifically want OTA core pushing or remote WiFi logging.
 :::
 
-### Building firmware with your own WiFi credentials
+### Setting WiFi credentials with esptool (no rebuild needed)
 
-1. Install [ESP-IDF v5.2.2](https://docs.espressif.com/projects/esp-idf/en/v5.2.2/esp32s3/get-started/index.html) and set up the `esp32s3` target toolchain
-2. Clone the firmware source:
-   ```bash
-   git clone --recursive https://github.com/Papilio-Retrocade/FPGA-Companion.git
-   cd FPGA-Companion/src/esp32
-   ```
-3. Copy the credentials template and fill in your network:
-   ```bash
-   cp sdkconfig.defaults.local.example sdkconfig.defaults.local
-   ```
-   Edit `sdkconfig.defaults.local`:
-   ```
-   CONFIG_WIFI_LOG_SSID="YourNetworkName"
-   CONFIG_WIFI_LOG_PASSWORD="YourNetworkPassword"
-   ```
-4. Build the firmware:
-   ```bash
-   idf.py set-target esp32s3
-   idf.py build
-   ```
-5. Flash the resulting `build/fpga_companion.bin` using Papilio Loader (**USB/Serial**, Advanced Options → Flash Address `0x10000`) or directly with `idf.py -p <port> flash`
+FPGA-Companion checks the ESP32's NVS flash partition for a WiFi override at boot, before falling back to the placeholder baked into the release binary. You can write that override yourself with two small, official Espressif command-line tools — no ESP-IDF toolchain and no firmware rebuild:
 
-:::warning
-`sdkconfig.defaults.local` is gitignored on purpose — never commit real WiFi credentials to a public fork or share your compiled binary publicly.
+1. Install the tools (Python, cross-platform):
+   ```bash
+   pip install esptool esp-idf-nvs-partition-gen
+   ```
+2. Create a file named `wifi_nvs.csv`:
+   ```csv
+   key,type,encoding,value
+   wifi_cfg,namespace,,
+   ssid,data,string,YourNetworkName
+   pass,data,string,YourNetworkPassword
+   ```
+3. Generate the NVS binary (the device's NVS partition is 20 KB — `0x5000` bytes):
+   ```bash
+   python -m esp_idf_nvs_partition_gen generate wifi_nvs.csv wifi_nvs.bin 0x5000
+   ```
+4. Put the ESP32-S3 in bootloader mode (hold **BOOT**, plug in USB-C, release after 2 seconds) and flash it to the NVS partition at offset `0x9000`:
+   ```bash
+   python -m esptool --chip esp32s3 -b 460800 write-flash 0x9000 wifi_nvs.bin
+   ```
+5. Power-cycle the device — it connects using your credentials
+
+:::tip
+This NVS partition is separate from the application firmware, so future OTA or USB firmware updates won't erase your WiFi credentials.
 :::
 
-:::note Roadmap
-A future release may add in-OSD WiFi provisioning (enter SSID/password without rebuilding). Until then, building from source is the only way to bake in real credentials.
+:::note Advanced: building from source
+You can still bake credentials into a custom build via `sdkconfig.defaults.local` if you prefer — see `src/esp32/README.md` in the [FPGA-Companion repo](https://github.com/Papilio-Retrocade/FPGA-Companion). For most users the esptool/NVS method above is simpler and doesn't require installing ESP-IDF.
 :::
 
 ---

@@ -11,7 +11,7 @@ Debugging Gowin synthesis errors when building or modifying FPGA cores.
 
 ---
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 This guide will cover common synthesis errors from Gowin EDA, how to read synthesis reports, and how to use AI to diagnose and fix them.
 :::
 

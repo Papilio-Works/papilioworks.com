@@ -11,7 +11,7 @@ The Papilio ecosystem uses the **Wishbone B4** open-source bus standard as the i
 
 ---
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 This overview will cover:
 
 - What Wishbone is and why Papilio uses it

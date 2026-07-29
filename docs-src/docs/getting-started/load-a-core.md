@@ -76,7 +76,7 @@ You can still bake credentials into a custom build via `sdkconfig.defaults.local
 
 ## Step 2: Download Core Bitfiles
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 Direct download links for each core will be added here once the first release is published.
 :::
 
@@ -95,7 +95,7 @@ Download from: [https://github.com/Papilio-Retrocade](https://github.com/Papilio
 
 ## Step 3: Load via OSD Menu
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 OSD menu navigation screenshots will be added here.
 :::
 

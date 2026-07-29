@@ -17,7 +17,7 @@ Based on [A2600Nano](https://github.com/Papilio-Retrocade/A2600Nano) — ported 
 
 ## Compatibility
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 Detailed compatibility notes, mapper support, and tested game list will be added here.
 :::
 
@@ -31,13 +31,13 @@ Place ROMs in `/a2600/` on your FAT32-formatted SD card.
 
 ## Controls
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 Button mapping table for Xbox/PS4/PS5 will be added here.
 :::
 
 ## Known Issues
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 Known issues and workarounds will be listed here as they are identified.
 :::
 

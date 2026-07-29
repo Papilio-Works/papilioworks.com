@@ -21,7 +21,7 @@ Overview of all cores — current status, what works, and what's coming.
 
 ---
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 Detailed per-game compatibility tables will be added here as testing data is collected. Community contributions welcome — see [Contributing Cores](../advanced/contributing-cores).
 :::
 

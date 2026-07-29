@@ -80,7 +80,7 @@ The wireless brain. Handles:
 
 ---
 
-:::tip[Start Here]
+:::tip[Start Here]
 If you're reading this on a freshly opened box, start with **[Flash the Firmware →](./flash-firmware)**
 :::
 

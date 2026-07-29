@@ -46,7 +46,7 @@ The three boards stack together:
 
 ---
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 Pinout diagrams, connector descriptions, and power consumption data will be added here.
 :::
 

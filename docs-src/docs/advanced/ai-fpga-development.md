@@ -11,7 +11,7 @@ How Jack builds the Papilio platform using AI as a development co-pilot — and 
 
 ---
 
-:::note[Content Coming Soon]
+:::note[Content Coming Soon]
 This guide will cover:
 
 - The AI-first FPGA development workflow Jack uses day-to-day

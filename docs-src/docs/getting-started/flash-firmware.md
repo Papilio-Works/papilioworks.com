@@ -91,6 +91,10 @@ Papilio Loader can do a lot more than first-time flashing — OTA updates over W
 4. Power via USB-C into the Retrocade's USB-C port
 5. You should see the FPGA-Companion OSD on your screen
 
+When fully assembled, the system looks like this — ESP32-S3 in its header at the top-left, Tang Primer 20K in the SO-DIMM socket:
+
+![Fully assembled Retrocade system, top-down view](../../static/img/hardware/system-assembled-top.jpg)
+
 :::tip
 If you see nothing on screen, check that the HDMI cable is connected to the **Retrocade board** (not the Tang Primer 20K). Also confirm the ESP32-S3 is seated fully in its header pins.
 :::

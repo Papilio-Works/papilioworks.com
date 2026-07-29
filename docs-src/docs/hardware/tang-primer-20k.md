@@ -9,6 +9,10 @@ sidebar_position: 3
 
 The FPGA core module. Made by Sipeed. Plugs into the Retrocade's SO-DIMM-style header.
 
+![Sipeed Tang Primer 20K module with the ESP32-S3 SuperMini next to it for scale](../../static/img/hardware/tang-primer-20k-esp32.jpg)
+
+The Gowin GW2A-LV18 FPGA and 128 MB DDR3 dominate the module; the gold SO-DIMM edge connector along the top carries all I/O to the Retrocade board. Shown with the ESP32-S3 SuperMini for scale.
+
 ---
 
 ## Specifications

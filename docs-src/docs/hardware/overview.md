@@ -32,6 +32,8 @@ The three boards stack together:
 1. Tang Primer 20K plugs into the Retrocade's SO-DIMM-style header
 2. ESP32-S3 SuperMini plugs into the Retrocade's pin header
 
+![Fully assembled Retrocade system — ESP32-S3 SuperMini and Tang Primer 20K mounted on the Retrocade board](../../static/img/hardware/system-assembled-angle.jpg)
+
 ---
 
 ## Quick Specs

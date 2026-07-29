@@ -24,20 +24,52 @@ The Papilio Retrocade loads FPGA bitfiles wirelessly over WiFi — no programmer
 
 - FPGA-Companion firmware flashed (see [Flash the Firmware](./flash-firmware))
 - The Retrocade is powered and showing the OSD on HDMI
-- Your WiFi network credentials
 - The core bitfile you want to load
+- **Optional:** a custom-built firmware binary with your WiFi credentials, if you want to push cores over WiFi instead of an SD card (see Step 1 below)
 
 ---
 
-## Step 1: Connect to WiFi
+## Step 1: WiFi Is Optional (and Not Yet Configurable from the OSD)
 
-:::note Content Coming Soon
-WiFi configuration screenshots will be added here.
+FPGA-Companion does not currently have an in-menu WiFi setup screen — there's no way to type an SSID/password into the OSD. WiFi credentials are compiled into the firmware binary itself, not entered at runtime.
+
+The official pre-built release (`fpga-companion-esp32s3-v1.0.0-merged.bin`) ships with a **placeholder SSID** and will never connect to a real network. This is intentional — the maintainers don't bake real credentials into a public binary.
+
+:::tip Most users can skip WiFi entirely
+Loading cores from an SD card (**Step 3, Option A** below) works fully offline and needs no WiFi at all. Only use the steps below if you specifically want OTA core pushing or remote WiFi logging.
 :::
 
-1. From the OSD menu, navigate to **Settings → WiFi**
-2. Select your network and enter the password
-3. The ESP32-S3 will remember your credentials across reboots
+### Building firmware with your own WiFi credentials
+
+1. Install [ESP-IDF v5.2.2](https://docs.espressif.com/projects/esp-idf/en/v5.2.2/esp32s3/get-started/index.html) and set up the `esp32s3` target toolchain
+2. Clone the firmware source:
+   ```bash
+   git clone --recursive https://github.com/Papilio-Retrocade/FPGA-Companion.git
+   cd FPGA-Companion/src/esp32
+   ```
+3. Copy the credentials template and fill in your network:
+   ```bash
+   cp sdkconfig.defaults.local.example sdkconfig.defaults.local
+   ```
+   Edit `sdkconfig.defaults.local`:
+   ```
+   CONFIG_WIFI_LOG_SSID="YourNetworkName"
+   CONFIG_WIFI_LOG_PASSWORD="YourNetworkPassword"
+   ```
+4. Build the firmware:
+   ```bash
+   idf.py set-target esp32s3
+   idf.py build
+   ```
+5. Flash the resulting `build/fpga_companion.bin` using Papilio Loader (**USB/Serial**, Advanced Options → Flash Address `0x10000`) or directly with `idf.py -p <port> flash`
+
+:::warning
+`sdkconfig.defaults.local` is gitignored on purpose — never commit real WiFi credentials to a public fork or share your compiled binary publicly.
+:::
+
+:::note Roadmap
+A future release may add in-OSD WiFi provisioning (enter SSID/password without rebuilding). Until then, building from source is the only way to bake in real credentials.
+:::
 
 ---
 

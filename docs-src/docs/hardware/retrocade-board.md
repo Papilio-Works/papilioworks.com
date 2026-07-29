@@ -9,7 +9,7 @@ sidebar_position: 2
 
 Designed by Papilio Works. The main expansion board that connects the Tang Primer 20K FPGA module to the outside world.
 
-![Papilio Retrocade 20K PL1000 board with Tang Primer 20K installed in the SO-DIMM socket](../../static/img/hardware/retrocade-tang-installed-top.jpg)
+![Papilio Retrocade 20K PL1000 board with Tang Primer 20K installed in the SO-DIMM socket and ESP32-S3 SuperMini mounted](../../static/img/hardware/retrocade-board-assembled.jpg)
 
 Along the top edge, left to right: ESP32-S3 SuperMini header, USB-C power input, 3.5mm audio jack, and HDMI output. The Tang Primer 20K clips into the SO-DIMM socket below, and the Winbond SDRAM sits on the lower half of the board.
 
@@ -28,7 +28,7 @@ Along the top edge, left to right: ESP32-S3 SuperMini header, USB-C power input,
 | Programmer | Onboard JTAG |
 | FPGA Header | SO-DIMM-style, 200-pin |
 
-![Retrocade board at an angle showing the SO-DIMM latch and connector row](../../static/img/hardware/retrocade-tang-installed-angle.jpg)
+![Retrocade board at an angle showing the SO-DIMM latch and connector row](../../static/img/hardware/system-assembled-angle.jpg)
 
 ---
 

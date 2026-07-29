@@ -9,9 +9,9 @@ sidebar_position: 4
 
 The wireless brain of the Retrocade system. A compact ESP32-S3 development board that handles all the "smart" functions so the FPGA can focus purely on running the game core.
 
-![ESP32-S3 SuperMini with header pins installed, next to the Tang Primer 20K](../../static/img/hardware/esp32-s3-supermini-tang.jpg)
+![ESP32-S3 SuperMini (back side) with header pins installed, next to the Tang Primer 20K](../../static/img/hardware/esp32-tang-primer-separate-angle.jpg)
 
-The SuperMini is tiny — barely larger than its USB-C connector. Shown here with header pins fitted for the Retrocade socket, next to a Tang Primer 20K for scale.
+The SuperMini is tiny — barely larger than its USB-C connector. Shown here (back side) with header pins fitted for the Retrocade socket, next to a Tang Primer 20K for scale.
 
 ---
 

@@ -35,12 +35,18 @@ Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com
 
 ## Step 1: Download the Firmware
 
-:::note Content Coming Soon
-Download links and version information will be added here once the first release is published.
+1. Go to the [FPGA-Companion releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) — the current release is **v1.0.0**
+2. Download **`fpga-companion-esp32s3-v1.0.0-merged.bin`**
+
+This merged image bundles the bootloader, partition table, and application into a single file that flashes at address `0x0` — the simplest option for a fresh ESP32-S3 SuperMini.
+
+:::tip
+Advanced users who prefer to flash the bootloader, partition table, and app as separate files (e.g. for OTA-only application updates) can instead download `fpga-companion-esp32s3-v1.0.0.zip`, which contains the individual binaries and their flash offsets — see the release notes on the [releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) for details.
 :::
 
-1. Go to the [FPGA-Companion releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases)
-2. Download the latest `fpga-companion-retrocade-esp32s3.bin`
+:::warning No WiFi out of the box
+The pre-built binary ships with a **placeholder WiFi SSID** — it will not connect to your network. WiFi is only needed for OTA core pushing and remote logging; USB flashing and SD-card core loading work fully offline. If you want WiFi features, see [Connect to WiFi](./load-a-core#step-1-wifi-is-optional-and-not-yet-configurable-from-the-osd) on the next page for how to build your own binary with real credentials.
+:::
 
 ---
 
@@ -77,9 +83,10 @@ Papilio Loader can do a lot more than first-time flashing — OTA updates over W
 1. Hold the **BOOT button** on the ESP32-S3 SuperMini
 2. Plug in the USB-C cable while holding BOOT
 3. Release BOOT after 2 seconds — the device is now in bootloader mode
-4. In the Papilio Loader web UI, under **ESP32 Flash**, select **USB/Serial**, choose your serial port, click to select the `.bin` file you downloaded, and click **Flash ESP32**
-5. Wait for the flash to complete (~30 seconds)
-6. Unplug and replug USB-C — the green LED should blink
+4. In the Papilio Loader web UI, under **ESP32 Flash**, select **USB/Serial**, then click **Click to select .bin or .elf file** and choose the merged `.bin` file you downloaded
+5. Click **⚙️ Advanced Options** and set **Flash Address (hex)** to `0x0` — the merged image includes the bootloader, so it must be written starting at address zero, not the default `0x10000` app partition
+6. Click **Flash ESP32** and wait for the flash to complete (~30 seconds)
+7. Unplug and replug USB-C — the green LED should blink
 
 ---
 

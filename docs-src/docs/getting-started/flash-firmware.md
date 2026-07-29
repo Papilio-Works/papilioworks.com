@@ -35,13 +35,13 @@ Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com
 
 ## Step 1: Download the Firmware
 
-1. Go to the [FPGA-Companion releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) — the current release is **v1.0.0**
-2. Download **`fpga-companion-esp32s3-v1.0.0-merged.bin`**
+1. Go to the [FPGA-Companion releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) — the current release is **v1.0.1**
+2. Download **`fpga-companion-esp32s3-v1.0.1-merged.bin`**
 
 This merged image bundles the bootloader, partition table, and application into a single file that flashes at address `0x0` — the simplest option for a fresh ESP32-S3 SuperMini.
 
 :::tip
-Advanced users who prefer to flash the bootloader, partition table, and app as separate files (e.g. for OTA-only application updates) can instead download `fpga-companion-esp32s3-v1.0.0.zip`, which contains the individual binaries and their flash offsets — see the release notes on the [releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) for details.
+Advanced users who prefer to flash the bootloader, partition table, and app as separate files (e.g. for OTA-only application updates) can instead download `fpga-companion-esp32s3-v1.0.1.zip`, which contains the individual binaries and their flash offsets — see the release notes on the [releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) for details.
 :::
 
 :::warning No WiFi out of the box

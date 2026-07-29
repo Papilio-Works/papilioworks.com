@@ -33,7 +33,7 @@ The Papilio Retrocade loads FPGA bitfiles wirelessly over WiFi — no programmer
 
 FPGA-Companion does not currently have an in-menu WiFi setup screen — there's no way to type an SSID/password into the OSD. WiFi credentials are compiled into the firmware binary itself, not entered at runtime.
 
-The official pre-built release (`fpga-companion-esp32s3-v1.0.0-merged.bin`) ships with a **placeholder SSID** and will never connect to a real network. This is intentional — the maintainers don't bake real credentials into a public binary.
+The official pre-built release (`fpga-companion-esp32s3-v1.0.1-merged.bin`) ships with a **placeholder SSID** and will never connect to a real network. This is intentional — the maintainers don't bake real credentials into a public binary.
 
 :::tip Most users can skip WiFi entirely
 Loading cores from an SD card (**Step 3, Option A** below) works fully offline and needs no WiFi at all. Only use the steps below if you specifically want OTA core pushing or remote WiFi logging.

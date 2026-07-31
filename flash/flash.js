@@ -129,7 +129,13 @@ function updateFlashEsp32Enabled() {
 
 function updateFlashFpgaEnabled() {
   const isRecovery = els.fpgaTarget.value === "/fpga-recover";
-  els.btnFlashFpga.disabled = !(deviceIp && (isRecovery || els.fpgaFile.files[0]));
+  // Recovery has no USB-serial equivalent yet, so it still requires a known
+  // IP. The other two targets can go over WiFi OTA *or* USB serial, so the
+  // button just needs some transport (IP or an already-selected serial port)
+  // plus a bitstream file.
+  const hasTransport = Boolean(deviceIp || serialPort);
+  const hasFile = isRecovery ? Boolean(deviceIp) : Boolean(els.fpgaFile.files[0]);
+  els.btnFlashFpga.disabled = !(hasTransport && hasFile);
 }
 
 // The firmware streams the uploaded bytes verbatim to flash or JTAG SRAM —
@@ -299,8 +305,38 @@ async function startSerialListener() {
   await readableClosed;
 }
 
+// Promise-based waiters for the serial-flash protocol (READY / PROGRESS n /
+// FPGA_FLASH_OK / FPGA_FLASH_ERROR <reason>). The serial port's readable
+// stream can only have one active reader, so this hooks into the single
+// startSerialListener() read loop instead of opening a second reader.
+let serialWaiters = [];
+
+function waitForSerialLine(matchRegex, timeoutMs, onEachLine) {
+  return new Promise((resolve, reject) => {
+    const waiter = { matchRegex, onEachLine };
+    waiter.timeoutHandle = setTimeout(() => {
+      serialWaiters = serialWaiters.filter((w) => w !== waiter);
+      reject(new Error(`Timed out waiting for board (expected ${matchRegex})`));
+    }, timeoutMs);
+    waiter.resolve = (line) => {
+      clearTimeout(waiter.timeoutHandle);
+      serialWaiters = serialWaiters.filter((w) => w !== waiter);
+      resolve(line);
+    };
+    serialWaiters.push(waiter);
+  });
+}
+
 function handleSerialLine(line) {
   log(line);
+
+  for (const waiter of serialWaiters.slice()) {
+    if (waiter.matchRegex.test(line)) {
+      waiter.resolve(line);
+    } else if (waiter.onEachLine) {
+      waiter.onEachLine(line);
+    }
+  }
 
   const ipMatch = line.match(IP_REGEX);
   if (ipMatch) setDeviceIp(ipMatch[1]);
@@ -393,12 +429,25 @@ els.btnFindIp.addEventListener("click", async () => {
 });
 
 /* ---------------------------------------------------------------------- */
-/* Step 3 — Flash FPGA bitstream via OTA HTTP POST                          */
+/* Step 3 — Flash FPGA bitstream: WiFi OTA first, USB serial fallback       */
 /* ---------------------------------------------------------------------- */
 
-els.btnFlashFpga.addEventListener("click", async () => {
-  if (!deviceIp) return;
+// Maps the target dropdown's OTA endpoint to the serial-flash protocol's
+// target keyword (see FPGA-Companion's serial_flash.h). /fpga-recover has no
+// serial equivalent yet — recovery implies the flash is corrupt, but the
+// board still needs to be reachable somehow to even ask for it, so it stays
+// OTA-only for this iteration.
+const SERIAL_FPGA_TARGET = {
+  "/fpga-update": "flash",
+  "/fpga-jtag-sram": "sram",
+};
 
+function updateFpgaProgress(loaded, total) {
+  const pct = total ? Math.round((loaded / total) * 100) : 0;
+  els.progressFpga.querySelector(".progress-bar").style.width = `${pct}%`;
+}
+
+els.btnFlashFpga.addEventListener("click", async () => {
   const target = els.fpgaTarget.value;
   const file = els.fpgaFile.files[0];
   const isRecovery = target === "/fpga-recover";
@@ -410,27 +459,50 @@ els.btnFlashFpga.addEventListener("click", async () => {
     return;
   }
 
+  if (isRecovery && !deviceIp) {
+    setStatus(els.statusFpga, "Recovery requires a known device IP — use Find My IP or send WiFi credentials first.", "error");
+    return;
+  }
+
   els.btnFlashFpga.disabled = true;
   els.progressFpga.hidden = false;
-  els.progressFpga.querySelector(".progress-bar").style.width = "0%";
+  updateFpgaProgress(0, 1);
   setStatus(els.statusFpga, "Uploading to board…");
 
   try {
     const body = isRecovery ? new ArrayBuffer(0) : await file.arrayBuffer();
-    const url = `http://${deviceIp}:${OTA_PORT}${target}`;
-    const responseText = await otaPost(url, body, (loaded, total) => {
-      const pct = total ? Math.round((loaded / total) * 100) : 0;
-      els.progressFpga.querySelector(".progress-bar").style.width = `${pct}%`;
-    });
-    log(responseText);
-    setStatus(els.statusFpga, "FPGA programmed successfully.", "ok");
-  } catch (err) {
-    log(`FPGA flash failed: ${err.message}`);
+    let usedPath = null;
+
+    if (deviceIp) {
+      try {
+        setStatus(els.statusFpga, "Uploading to board over WiFi…");
+        const url = `http://${deviceIp}:${OTA_PORT}${target}`;
+        const responseText = await otaPost(url, body, updateFpgaProgress);
+        log(responseText);
+        usedPath = "network";
+      } catch (otaErr) {
+        log(`WiFi OTA upload failed: ${otaErr.message}`);
+        if (isRecovery || !serialPort) throw otaErr; // no fallback available
+        log("Falling back to USB serial…");
+      }
+    }
+
+    if (!usedPath) {
+      if (isRecovery) throw new Error("Recovery requires a working network/IP path — no USB serial equivalent yet.");
+      if (!serialPort) throw new Error("No device IP known and no USB serial port connected.");
+      setStatus(els.statusFpga, "No IP known — flashing over USB serial (slower than WiFi)…");
+      await flashFpgaOverSerial(target, new Uint8Array(body), updateFpgaProgress);
+      usedPath = "serial";
+    }
+
     setStatus(
       els.statusFpga,
-      `Flash failed: ${err.message} (check the board is on the same network and reachable at ${deviceIp})`,
-      "error"
+      usedPath === "network" ? "FPGA programmed successfully via network." : "FPGA programmed successfully via USB serial.",
+      "ok"
     );
+  } catch (err) {
+    log(`FPGA flash failed: ${err.message}`);
+    setStatus(els.statusFpga, `Flash failed: ${err.message}`, "error");
   } finally {
     els.btnFlashFpga.disabled = false;
   }
@@ -454,3 +526,49 @@ function otaPost(url, body, onProgress) {
     xhr.send(body);
   });
 }
+
+// USB-serial fallback for Step 3 — streams the bitstream over the same
+// serial port used in Steps 1/2 instead of WiFi OTA. See
+// FPGA-Companion/src/esp32/serial_flash.h for the line protocol.
+async function flashFpgaOverSerial(target, data, onProgress) {
+  const serialTarget = SERIAL_FPGA_TARGET[target];
+  if (!serialTarget) throw new Error("This target has no USB serial equivalent yet — use WiFi OTA.");
+  if (!serialPort) throw new Error("No USB serial port connected.");
+
+  await startSerialListener(); // no-op if already running; ensures response lines are captured
+
+  const size = data.byteLength;
+  const encoder = new TextEncoder();
+  const writer = serialPort.writable.getWriter();
+
+  try {
+    const readyPromise = waitForSerialLine(/^READY$|^FPGA_FLASH_ERROR /, 10000);
+    await writer.write(encoder.encode(`FPGA_FLASH_BEGIN ${serialTarget} ${size}\n`));
+
+    const readyLine = await readyPromise;
+    if (readyLine.startsWith("FPGA_FLASH_ERROR")) {
+      throw new Error(`Board rejected request: ${readyLine}`);
+    }
+
+    // Long timeout — USB-Serial-JTAG is much slower than WiFi OTA for a full
+    // bitstream write, especially the SPI-flash target (erase + write).
+    const donePromise = waitForSerialLine(/^FPGA_FLASH_OK$|^FPGA_FLASH_ERROR /, 180000, (line) => {
+      const m = line.match(/^PROGRESS (\d+)/);
+      if (m) onProgress(parseInt(m[1], 10), size);
+    });
+
+    const CHUNK = 16384;
+    for (let offset = 0; offset < size; offset += CHUNK) {
+      await writer.write(data.subarray(offset, Math.min(offset + CHUNK, size)));
+    }
+
+    const resultLine = await donePromise;
+    if (resultLine.startsWith("FPGA_FLASH_ERROR")) {
+      throw new Error(`Board reported: ${resultLine}`);
+    }
+    onProgress(size, size);
+  } finally {
+    writer.releaseLock();
+  }
+}
+

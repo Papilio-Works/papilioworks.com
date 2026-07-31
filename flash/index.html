@@ -108,12 +108,14 @@
     <section class="flash-step" id="step-fpga">
       <div class="flash-step-header">
         <span class="flash-step-num">3</span>
-        <h2>Flash FPGA Bitstream (WiFi OTA)</h2>
+        <h2>Flash FPGA Bitstream (WiFi or USB)</h2>
       </div>
       <p class="flash-step-desc">
-        Sent directly from this browser tab to the board over your local network — POST over HTTP, no cloud relay.
-        Only Gowin's headerless <strong>.bin</strong> ("Binary File") bitstream export is supported for either
-        target below — <strong>.fs</strong> exports aren't parsed by the firmware yet.
+        Sent directly from this browser tab to the board — over WiFi if the device's IP is known
+        (fastest), or over the same USB connection from Step 1/2 as a fallback if it isn't. No cloud
+        relay either way. Only Gowin's headerless <strong>.bin</strong> ("Binary File") bitstream
+        export is supported for either target below — <strong>.fs</strong> exports aren't parsed by
+        the firmware yet. <em>Recovery</em> requires a known IP (WiFi OTA only for now).
       </p>
 
       <div class="flash-row">

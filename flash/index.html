@@ -109,6 +109,8 @@
       </div>
       <p class="flash-step-desc">
         Sent directly from this browser tab to the board over your local network — POST over HTTP, no cloud relay.
+        <strong>.bin</strong> (Gowin flash programming file) and <strong>.fs</strong> (Gowin SRAM programming file)
+        are different bitstream formats — picking a file auto-selects the matching target below.
       </p>
 
       <div class="flash-row">
@@ -117,8 +119,8 @@
           <span id="fpga-file-label">Choose bitstream .bin/.fs&hellip;</span>
         </label>
         <select id="fpga-target">
-          <option value="/fpga-update">SPI Flash (persistent)</option>
-          <option value="/fpga-jtag-sram">JTAG SRAM (fast, volatile)</option>
+          <option value="/fpga-update">SPI Flash — .bin (persistent)</option>
+          <option value="/fpga-jtag-sram">JTAG SRAM — .fs (fast, volatile)</option>
           <option value="/fpga-recover">Recovery (erase bitstream region)</option>
         </select>
         <button id="btn-flash-fpga" class="btn btn-primary" disabled>Flash FPGA</button>

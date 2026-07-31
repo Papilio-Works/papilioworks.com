@@ -117,6 +117,16 @@ els.esp32File.addEventListener("change", () => {
 els.fpgaFile.addEventListener("change", () => {
   const file = els.fpgaFile.files[0];
   els.fpgaFileLabel.textContent = file ? file.name : "Choose bitstream .bin/.fs…";
+  // .fs (Gowin SRAM programming file) and .bin (Gowin flash programming file)
+  // are different bitstream encodings, not interchangeable — auto-pick the
+  // only endpoint that accepts each so the default selection is never wrong.
+  if (file) {
+    if (/\.fs$/i.test(file.name)) {
+      els.fpgaTarget.value = "/fpga-jtag-sram";
+    } else if (/\.bin$/i.test(file.name)) {
+      els.fpgaTarget.value = "/fpga-update";
+    }
+  }
   updateFlashFpgaEnabled();
 });
 
@@ -129,6 +139,22 @@ function updateFlashEsp32Enabled() {
 function updateFlashFpgaEnabled() {
   const isRecovery = els.fpgaTarget.value === "/fpga-recover";
   els.btnFlashFpga.disabled = !(deviceIp && (isRecovery || els.fpgaFile.files[0]));
+}
+
+// /fpga-update (SPI flash) only accepts Gowin's "flash" .bin format;
+// /fpga-jtag-sram only accepts Gowin's "SRAM" .fs format — sending the wrong
+// one silently corrupts/boots nothing, so this is a hard block, not a hint.
+function validateFpgaFileTarget(file, target) {
+  if (!file || target === "/fpga-recover") return null;
+  const isFs = /\.fs$/i.test(file.name);
+  const isBin = /\.bin$/i.test(file.name);
+  if (target === "/fpga-jtag-sram" && !isFs) {
+    return "JTAG SRAM only accepts Gowin's .fs (SRAM programming) file — select \"SPI Flash\" for a .bin file instead.";
+  }
+  if (target === "/fpga-update" && !isBin) {
+    return "SPI Flash only accepts Gowin's .bin (flash programming) file — select \"JTAG SRAM\" for a .fs file instead.";
+  }
+  return null;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -355,6 +381,12 @@ els.btnFlashFpga.addEventListener("click", async () => {
   const file = els.fpgaFile.files[0];
   const isRecovery = target === "/fpga-recover";
   if (!isRecovery && !file) return;
+
+  const mismatchError = validateFpgaFileTarget(file, target);
+  if (mismatchError) {
+    setStatus(els.statusFpga, mismatchError, "error");
+    return;
+  }
 
   els.btnFlashFpga.disabled = true;
   els.progressFpga.hidden = false;

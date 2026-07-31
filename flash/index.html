@@ -84,12 +84,15 @@
       </div>
       <p class="flash-step-desc">
         Sent directly to the board over the still-open USB connection — never over the internet.
+        <strong>Already flashed and connected to WiFi from a previous session?</strong> Plug it into
+        USB, click <em>Find My IP</em> below, then press RESET — no need to resend credentials.
       </p>
 
       <div class="flash-row">
         <input type="text" id="wifi-ssid" placeholder="WiFi network name (SSID)" autocomplete="off">
         <input type="password" id="wifi-pass" placeholder="WiFi password" autocomplete="off">
         <button id="btn-send-wifi" class="btn btn-primary" disabled>Send to Board</button>
+        <button id="btn-find-ip" class="btn btn-outline">Find My IP</button>
       </div>
       <p class="flash-status" id="status-wifi"></p>
 

@@ -40,6 +40,7 @@ const els = {
   deviceIp: document.getElementById("device-ip"),
   deviceIpManual: document.getElementById("device-ip-manual"),
   btnUseManualIp: document.getElementById("btn-use-manual-ip"),
+  btnFindIp: document.getElementById("btn-find-ip"),
 
   fpgaFile: document.getElementById("fpga-file"),
   fpgaFileLabel: document.getElementById("fpga-file-label"),
@@ -99,7 +100,7 @@ function setStatus(el, message, kind) {
 
 if (!("serial" in navigator)) {
   els.unsupportedBanner.hidden = false;
-  [els.btnConnect, els.btnFlashEsp32, els.btnSendWifi, els.btnFlashFpga].forEach(
+  [els.btnConnect, els.btnFlashEsp32, els.btnSendWifi, els.btnFlashFpga, els.btnFindIp].forEach(
     (btn) => (btn.disabled = true)
   );
 }
@@ -253,6 +254,7 @@ els.btnFlashEsp32.addEventListener("click", async () => {
 
 async function startSerialListener() {
   if (!serialPort) return;
+  if (serialReadLoop && !serialReadLoop.stop) return; // already listening
 
   try {
     if (!serialPort.readable) {
@@ -354,6 +356,25 @@ els.btnUseManualIp.addEventListener("click", () => {
   }
   setDeviceIp(ip);
   setStatus(els.statusWifi, `Using manually entered IP ${ip}.`, "ok");
+});
+
+// For a board that's already flashed and already has WiFi credentials saved
+// in NVS from a prior session — no need to reflash or resend credentials,
+// just open the same USB serial port and read the boot log it prints on
+// every reconnect (the firmware logs "WiFi connected - IP: ..." on every
+// boot, not just first-time provisioning).
+els.btnFindIp.addEventListener("click", async () => {
+  try {
+    if (!serialPort) {
+      serialPort = await navigator.serial.requestPort();
+      log("Serial port selected.");
+    }
+    await startSerialListener();
+    setStatus(els.statusWifi, "Listening on USB — press the RESET button on your board to see its IP.");
+  } catch (err) {
+    log(`Find IP failed: ${err.message}`);
+    setStatus(els.statusWifi, `Find IP failed: ${err.message}`, "error");
+  }
 });
 
 /* ---------------------------------------------------------------------- */

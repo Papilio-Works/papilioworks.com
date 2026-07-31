@@ -116,17 +116,7 @@ els.esp32File.addEventListener("change", () => {
 
 els.fpgaFile.addEventListener("change", () => {
   const file = els.fpgaFile.files[0];
-  els.fpgaFileLabel.textContent = file ? file.name : "Choose bitstream .bin/.fs…";
-  // .fs (Gowin SRAM programming file) and .bin (Gowin flash programming file)
-  // are different bitstream encodings, not interchangeable — auto-pick the
-  // only endpoint that accepts each so the default selection is never wrong.
-  if (file) {
-    if (/\.fs$/i.test(file.name)) {
-      els.fpgaTarget.value = "/fpga-jtag-sram";
-    } else if (/\.bin$/i.test(file.name)) {
-      els.fpgaTarget.value = "/fpga-update";
-    }
-  }
+  els.fpgaFileLabel.textContent = file ? file.name : "Choose bitstream .bin…";
   updateFlashFpgaEnabled();
 });
 
@@ -141,18 +131,14 @@ function updateFlashFpgaEnabled() {
   els.btnFlashFpga.disabled = !(deviceIp && (isRecovery || els.fpgaFile.files[0]));
 }
 
-// /fpga-update (SPI flash) only accepts Gowin's "flash" .bin format;
-// /fpga-jtag-sram only accepts Gowin's "SRAM" .fs format — sending the wrong
-// one silently corrupts/boots nothing, so this is a hard block, not a hint.
+// The firmware streams the uploaded bytes verbatim to flash or JTAG SRAM —
+// it never strips Gowin's ASCII comment header, so only headerless .bin
+// (Gowin's "Binary File" export) works. Real .fs exports (which start with
+// that text header) are not supported yet on either target.
 function validateFpgaFileTarget(file, target) {
   if (!file || target === "/fpga-recover") return null;
-  const isFs = /\.fs$/i.test(file.name);
-  const isBin = /\.bin$/i.test(file.name);
-  if (target === "/fpga-jtag-sram" && !isFs) {
-    return "JTAG SRAM only accepts Gowin's .fs (SRAM programming) file — select \"SPI Flash\" for a .bin file instead.";
-  }
-  if (target === "/fpga-update" && !isBin) {
-    return "SPI Flash only accepts Gowin's .bin (flash programming) file — select \"JTAG SRAM\" for a .fs file instead.";
+  if (!/\.bin$/i.test(file.name)) {
+    return "Only .bin (Gowin \"Binary File\") bitstreams are supported right now — .fs files are not yet parsed by the firmware.";
   }
   return null;
 }

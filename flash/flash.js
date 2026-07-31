@@ -363,17 +363,32 @@ els.btnUseManualIp.addEventListener("click", () => {
 // just open the same USB serial port and read the boot log it prints on
 // every reconnect (the firmware logs "WiFi connected - IP: ..." on every
 // boot, not just first-time provisioning).
+//
+// Two clicks, not one: the port picker only lists devices the OS has already
+// enumerated, so if the board wasn't plugged in yet it shows nothing to pick.
+// The first click just tells the user to plug in/power the board; the second
+// (a fresh user gesture, required for requestPort()) opens the picker.
+let findIpArmed = false;
+
 els.btnFindIp.addEventListener("click", async () => {
+  if (!findIpArmed) {
+    findIpArmed = true;
+    els.btnFindIp.textContent = "Now click again to select the port…";
+    setStatus(els.statusWifi, "Plug your board into USB now (or press RESET if it's already plugged in), then click the button again.");
+    return;
+  }
+
   try {
-    if (!serialPort) {
-      serialPort = await navigator.serial.requestPort();
-      log("Serial port selected.");
-    }
+    serialPort = await navigator.serial.requestPort();
+    log("Serial port selected.");
     await startSerialListener();
     setStatus(els.statusWifi, "Listening on USB — press the RESET button on your board to see its IP.");
   } catch (err) {
     log(`Find IP failed: ${err.message}`);
     setStatus(els.statusWifi, `Find IP failed: ${err.message}`, "error");
+  } finally {
+    findIpArmed = false;
+    els.btnFindIp.textContent = "Find My IP";
   }
 });
 

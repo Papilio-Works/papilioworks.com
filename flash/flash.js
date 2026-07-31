@@ -75,7 +75,7 @@ if (!("serial" in navigator)) {
 
 els.esp32File.addEventListener("change", () => {
   const file = els.esp32File.files[0];
-  els.esp32FileLabel.textContent = file ? file.name : "Choose firmware .bin…";
+  els.esp32FileLabel.textContent = file ? file.name : "Choose *-merged.bin…";
   updateFlashEsp32Enabled();
 });
 
@@ -141,6 +141,8 @@ els.btnFlashEsp32.addEventListener("click", async () => {
 
     await loader.writeFlash({
       fileArray: [{ data, address: 0x0 }],
+      // "keep" reads flash mode/freq/size from the merged image's own
+      // bootloader header (baked in by `esptool merge_bin` at release time).
       flashMode: "keep",
       flashFreq: "keep",
       flashSize: "keep",

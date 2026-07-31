@@ -53,13 +53,16 @@
         <h2>Flash ESP32 Firmware (USB)</h2>
       </div>
       <p class="flash-step-desc">
-        Select the FPGA-Companion ESP32 firmware image, plug your board in over USB, then flash.
+        Download the latest <strong>-merged.bin</strong> from the
+        <a href="https://github.com/Papilio-Retrocade/FPGA-Companion/releases" target="_blank" rel="noopener">FPGA-Companion releases page</a>,
+        plug your board in over USB, then flash. The merged image contains the bootloader, partition
+        table, and app in one file — do not use the plain <code>fpga_companion.bin</code> from the release zip here.
       </p>
 
       <div class="flash-row">
         <label class="file-picker">
           <input type="file" id="esp32-file" accept=".bin">
-          <span id="esp32-file-label">Choose firmware .bin&hellip;</span>
+          <span id="esp32-file-label">Choose *-merged.bin&hellip;</span>
         </label>
         <button id="btn-connect" class="btn btn-outline">Connect USB</button>
         <button id="btn-flash-esp32" class="btn btn-primary" disabled>Flash ESP32</button>

@@ -6,7 +6,18 @@
 //
 // Requires Chrome or Edge (WebSerial + a secure/HTTPS context).
 
-import { ESPLoader, Transport } from "https://unpkg.com/esptool-js/lib/index.js";
+// NOTE: unpkg serves esptool-js's raw lib/ source files as-is, and one of its
+// internal files (webserial.js) imports "./util" without a .js extension, which
+// browsers can't resolve (silently breaking every listener in this file).
+// CDN rewriting proxies (e.g. esm.sh) work around that, but esm.sh's JSON-module
+// bundling corrupts esptool-js's embedded base64 flasher-stub blobs (fetched via
+// dynamic `import()` of large per-chip .json files), causing
+// "Failed to execute 'atob': The string to be decoded is not correctly encoded"
+// during "Uploading stub...". Instead, use esptool-js's own published bundle.js:
+// it's a single, self-contained ES module (no relative imports, all stub data
+// inlined as string literals) that unpkg can serve verbatim with no CDN rewriting
+// involved. Pinned to an exact version for stability/integrity.
+import { ESPLoader, Transport } from "https://unpkg.com/esptool-js@0.6.0/bundle.js";
 
 const OTA_PORT = 3232;
 const IP_REGEX = /WiFi connected - IP:\s*(\d{1,3}(?:\.\d{1,3}){3})/;
@@ -42,6 +53,30 @@ let serialPort = null;      // the SerialPort object, requested once and reused
 let espTransport = null;    // esptool-js Transport, owns the port while flashing
 let serialReadLoop = null;  // AbortController-like flag for the raw read loop
 let deviceIp = null;
+let awaitingReconnect = false; // true while waiting for the board's USB to re-enumerate after a reset
+
+// A chip-level reset on native ESP32-S3 USB Serial/JTAG resets the USB
+// peripheral itself, so the OS briefly disconnects/reconnects the port —
+// killing the currently-open serial stream ("The device has been lost").
+// Once the same port reappears, resume the listener automatically instead of
+// leaving Step 2 stuck on "waiting for board…".
+// A chip-level reset on native ESP32-S3 USB Serial/JTAG resets the USB
+// peripheral itself, so the OS briefly disconnects/reconnects the port —
+// killing the currently-open serial stream ("The device has been lost").
+// Chrome creates a new SerialPort object for the reappeared device, so we
+// can't compare it against the stale `serialPort` reference — just take
+// whatever port reconnects (this app only ever talks to one board at a time)
+// and resume the listener automatically instead of leaving Step 2 stuck on
+// "waiting for board…".
+if ("serial" in navigator) {
+  navigator.serial.addEventListener("connect", (event) => {
+    if (!awaitingReconnect) return;
+    awaitingReconnect = false;
+    serialPort = event.target;
+    log("Board USB reconnected after reset, resuming serial listener…");
+    startSerialListener();
+  });
+}
 
 /* ---------------------------------------------------------------------- */
 /* Logging                                                                  */
@@ -155,19 +190,46 @@ els.btnFlashEsp32.addEventListener("click", async () => {
     });
 
     log("ESP32 firmware flashed.");
+    // NOTE: UsbJtagSerialReset was tried here for native ESP32-S3 USB
+    // Serial/JTAG ports (VID 0x303a, PID 0x1001) but it's actually the
+    // *enter-bootloader* sequence esptool-js uses at connect time — using it
+    // here left the board parked in the ROM bootloader instead of running
+    // the app (confirmed by testing). Classic hard_reset is the correct call
+    // for both native and bridged USB per esptool-js's own docs/examples.
     await loader.after("hard_reset");
     await espTransport.disconnect();
     espTransport = null;
 
-    setStatus(els.statusEsp32, "ESP32 flashed and rebooting.", "ok");
+    setStatus(els.statusEsp32, "ESP32 flashed.", "ok");
     els.btnSendWifi.disabled = false;
 
     // Give the board a moment to boot, then start listening on the same
     // serial port for its log output (WiFi status, provisioning acks).
     setTimeout(startSerialListener, 1500);
+
+    // esptool-js's software reset (both the classic RTS toggle and the
+    // USB-JTAG-Serial DTR+RTS sequence) doesn't reliably reboot this board's
+    // native USB Serial/JTAG hardware into the app — a physical reset press
+    // is required every time. This is an expected step, not an error: the
+    // still-running listener (and its reconnect handling) picks up the boot
+    // log and WiFi IP automatically once you do.
+    setStatus(
+      els.statusWifi,
+      "Press the RESET button on your board now to boot it and connect to WiFi."
+    );
   } catch (err) {
     log(`Flash failed: ${err.message}`);
     setStatus(els.statusEsp32, `Flash failed: ${err.message}`, "error");
+    // The transport may have opened the port before failing (e.g. chip sync
+    // timeout) — close it so a retry doesn't hit "port already open".
+    if (espTransport) {
+      try {
+        await espTransport.disconnect();
+      } catch {
+        // already closed/never opened — ignore
+      }
+      espTransport = null;
+    }
     els.btnConnect.disabled = false;
     updateFlashEsp32Enabled();
   }
@@ -211,6 +273,10 @@ async function startSerialListener() {
       }
     } catch (err) {
       log(`Serial read stopped: ${err.message}`);
+      if (!loopState.stop && /lost|disconnect/i.test(err.message)) {
+        log("Board USB is re-enumerating after reset — waiting to reconnect…");
+        awaitingReconnect = true;
+      }
     } finally {
       reader.releaseLock();
     }
@@ -238,6 +304,7 @@ function handleSerialLine(line) {
 function setDeviceIp(ip) {
   deviceIp = ip;
   els.deviceIp.textContent = ip;
+  setStatus(els.statusWifi, `Board connected — IP ${ip}`, "ok");
   updateFlashFpgaEnabled();
 }
 

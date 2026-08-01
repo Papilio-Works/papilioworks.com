@@ -56,6 +56,28 @@ let serialReadLoop = null;  // AbortController-like flag for the raw read loop
 let deviceIp = null;
 let awaitingReconnect = false; // true while waiting for the board's USB to re-enumerate after a reset
 
+// esptool-js's `after("hard_reset")` only toggles the RTS pin, which does not
+// reliably reboot a native USB Serial/JTAG ESP32-S3 back into the app (the
+// board is left requiring a physical RESET press). Python esptool has a
+// separate `--after watchdog-reset` mode for exactly this case (arms the RTC
+// watchdog and lets it fire, no DTR/RTS involved) but esptool-js has no JS
+// equivalent — this is a direct port of ESP32S3ROM.watchdog_reset() from
+// esptool's targets/esp32s3.py, using the same three register writes over
+// the already-connected ESPLoader. Confirmed reliable on the Papilio
+// Retrocade (see esp32s3-usb-auto-reset-findings repo memory).
+async function watchdogResetEsp32S3(loader) {
+  const RTC_CNTL_WDTCONFIG0_REG = 0x60008098;
+  const RTC_CNTL_WDTCONFIG1_REG = 0x6000809c;
+  const RTC_CNTL_WDTWPROTECT_REG = 0x600080b0;
+  const RTC_CNTL_WDT_WKEY = 0x50d83aa1;
+
+  await loader.writeReg(RTC_CNTL_WDTWPROTECT_REG, RTC_CNTL_WDT_WKEY); // unlock
+  await loader.writeReg(RTC_CNTL_WDTCONFIG1_REG, 2000); // WDT timeout
+  await loader.writeReg(RTC_CNTL_WDTCONFIG0_REG, 0xd0000102); // enable WDT
+  await loader.writeReg(RTC_CNTL_WDTWPROTECT_REG, 0); // lock
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
 // A chip-level reset on native ESP32-S3 USB Serial/JTAG resets the USB
 // peripheral itself, so the OS briefly disconnects/reconnects the port —
 // killing the currently-open serial stream ("The device has been lost").
@@ -75,7 +97,7 @@ if ("serial" in navigator) {
     awaitingReconnect = false;
     serialPort = event.target;
     log("Board USB reconnected after reset, resuming serial listener…");
-    startSerialListener();
+    startSerialListener().catch((err) => log(`Serial listener failed to resume: ${err.message}`));
   });
 }
 
@@ -209,13 +231,18 @@ els.btnFlashEsp32.addEventListener("click", async () => {
     });
 
     log("ESP32 firmware flashed.");
-    // NOTE: UsbJtagSerialReset was tried here for native ESP32-S3 USB
-    // Serial/JTAG ports (VID 0x303a, PID 0x1001) but it's actually the
-    // *enter-bootloader* sequence esptool-js uses at connect time — using it
-    // here left the board parked in the ROM bootloader instead of running
-    // the app (confirmed by testing). Classic hard_reset is the correct call
-    // for both native and bridged USB per esptool-js's own docs/examples.
-    await loader.after("hard_reset");
+    // Reboot the board back into the app. Only the RTC-watchdog reset (see
+    // watchdogResetEsp32S3 above) reliably reboots this board's native USB
+    // Serial/JTAG hardware without a physical RESET press — esptool-js's own
+    // reset strategies (classic RTS toggle, and the UsbJtagSerialReset used
+    // to *enter* the bootloader) leave it parked in the bootloader or
+    // requiring a manual press. Fall back to hard_reset for any other chip.
+    if (loader.chip && loader.chip.CHIP_NAME === "ESP32-S3") {
+      log("Resetting board via RTC watchdog...");
+      await watchdogResetEsp32S3(loader);
+    } else {
+      await loader.after("hard_reset");
+    }
     await espTransport.disconnect();
     espTransport = null;
 
@@ -224,17 +251,17 @@ els.btnFlashEsp32.addEventListener("click", async () => {
 
     // Give the board a moment to boot, then start listening on the same
     // serial port for its log output (WiFi status, provisioning acks).
-    setTimeout(startSerialListener, 1500);
+    setTimeout(() => {
+      startSerialListener().catch((err) => log(`Serial listener failed to start: ${err.message}`));
+    }, 1500);
 
-    // esptool-js's software reset (both the classic RTS toggle and the
-    // USB-JTAG-Serial DTR+RTS sequence) doesn't reliably reboot this board's
-    // native USB Serial/JTAG hardware into the app — a physical reset press
-    // is required every time. This is an expected step, not an error: the
-    // still-running listener (and its reconnect handling) picks up the boot
-    // log and WiFi IP automatically once you do.
+    // The board reboots itself automatically (see watchdogResetEsp32S3
+    // above) — no physical RESET press needed. The still-running listener
+    // (and its reconnect handling) picks up the boot log and WiFi IP
+    // automatically once it comes back up.
     setStatus(
       els.statusWifi,
-      "Press the RESET button on your board now to boot it and connect to WiFi."
+      "Board rebooting automatically… waiting for it to connect to WiFi."
     );
   } catch (err) {
     log(`Flash failed: ${err.message}`);
@@ -262,13 +289,18 @@ async function startSerialListener() {
   if (!serialPort) return;
   if (serialReadLoop && !serialReadLoop.stop) return; // already listening
 
-  try {
-    if (!serialPort.readable) {
+  if (!serialPort.readable) {
+    try {
       await serialPort.open({ baudRate: 115200 });
+    } catch (err) {
+      // "already open" is a harmless re-entry race — readable will be set by
+      // then. Anything else (e.g. the board is still re-enumerating right
+      // after a reset) means the port truly isn't usable yet; surface that
+      // to the caller instead of falling through to a null-readable crash.
+      if (!serialPort.readable) {
+        throw new Error(`Could not open serial port: ${err.message}`);
+      }
     }
-  } catch (err) {
-    // Port may already be open (e.g. re-entry) — safe to ignore.
-    log(`Serial open note: ${err.message}`);
   }
 
   serialReadLoop = { stop: false };
@@ -298,11 +330,18 @@ async function startSerialListener() {
         awaitingReconnect = true;
       }
     } finally {
+      // Mark this loop dead so a later startSerialListener() call knows to
+      // actually spin up a new reader instead of assuming one is still live.
+      loopState.stop = true;
       reader.releaseLock();
     }
   })();
 
-  await readableClosed;
+  // Don't block the caller on the port fully closing (that may never happen
+  // during normal operation) — just note the loop as dead once it does.
+  readableClosed.then(() => {
+    loopState.stop = true;
+  });
 }
 
 // Promise-based waiters for the serial-flash protocol (READY / PROGRESS n /
@@ -544,7 +583,6 @@ async function flashFpgaOverSerial(target, data, onProgress) {
   try {
     const readyPromise = waitForSerialLine(/^READY$|^FPGA_FLASH_ERROR /, 10000);
     await writer.write(encoder.encode(`FPGA_FLASH_BEGIN ${serialTarget} ${size}\n`));
-
     const readyLine = await readyPromise;
     if (readyLine.startsWith("FPGA_FLASH_ERROR")) {
       throw new Error(`Board rejected request: ${readyLine}`);

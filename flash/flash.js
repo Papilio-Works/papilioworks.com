@@ -318,7 +318,9 @@ async function startSerialListener() {
         buf += value;
         let idx;
         while ((idx = buf.indexOf("\n")) >= 0) {
-          const line = buf.slice(0, idx).replace(/\r$/, "");
+          // \r+ not \r: the board's console converts \n to \r\n, so its own
+          // explicit "\r\n" line endings arrive as "\r\r\n".
+          const line = buf.slice(0, idx).replace(/\r+$/, "");
           buf = buf.slice(idx + 1);
           if (line.length) handleSerialLine(line);
         }
@@ -581,7 +583,14 @@ async function flashFpgaOverSerial(target, data, onProgress) {
   const writer = serialPort.writable.getWriter();
 
   try {
-    const readyPromise = waitForSerialLine(/^READY$|^FPGA_FLASH_ERROR /, 10000);
+    // For target=flash, the board does bootloader-SRAM-load + SPI init +
+    // full-region erase *before* replying READY (see serial_flash.c's
+    // serial_flash_prepare_spi() comment) — that can take up to ~60s in the
+    // worst case (SPI bus not yet initialised this early in boot, plus a
+    // slow 2MB erase over the JTAG-bridged SPI link), so this timeout is
+    // long. Keeping the erase ahead of READY avoids overflowing the
+    // board's small USB RX ring buffer with a payload it can't drain yet.
+    const readyPromise = waitForSerialLine(/^READY$|^FPGA_FLASH_ERROR /, 90000);
     await writer.write(encoder.encode(`FPGA_FLASH_BEGIN ${serialTarget} ${size}\n`));
     const readyLine = await readyPromise;
     if (readyLine.startsWith("FPGA_FLASH_ERROR")) {
@@ -595,9 +604,28 @@ async function flashFpgaOverSerial(target, data, onProgress) {
       if (m) onProgress(parseInt(m[1], 10), size);
     });
 
-    const CHUNK = 16384;
-    for (let offset = 0; offset < size; offset += CHUNK) {
-      await writer.write(data.subarray(offset, Math.min(offset + CHUNK, size)));
+    if (serialTarget === "flash") {
+      // Per-chunk flow control: wait for the device's PROGRESS ack (emitted
+      // after every chunk for target=flash) before sending the next chunk.
+      // The device's usb_serial_jtag RX ring buffer is small (16 KB) —
+      // without this, the whole payload gets handed to the OS/USB stack
+      // immediately and can overrun that buffer, wedging the USB transport
+      // permanently if a flash write is ever slower than the incoming byte
+      // rate. See serial_flash.c's serial_flash_write_spi() comment.
+      const CHUNK = 4096;
+      for (let offset = 0; offset < size; offset += CHUNK) {
+        const end = Math.min(offset + CHUNK, size);
+        // slice() (copy), not subarray() (view) — write() transfers/detaches
+        // the underlying buffer, which would invalidate every other view
+        // into the same source ArrayBuffer after the first write() call.
+        await writer.write(data.slice(offset, end));
+        await waitForSerialLine(new RegExp(`^PROGRESS ${end}$|^FPGA_FLASH_ERROR `), 10000);
+      }
+    } else {
+      const CHUNK = 16384;
+      for (let offset = 0; offset < size; offset += CHUNK) {
+        await writer.write(data.slice(offset, Math.min(offset + CHUNK, size)));
+      }
     }
 
     const resultLine = await donePromise;

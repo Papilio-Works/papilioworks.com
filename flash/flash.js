@@ -56,6 +56,28 @@ let serialReadLoop = null;  // AbortController-like flag for the raw read loop
 let deviceIp = null;
 let awaitingReconnect = false; // true while waiting for the board's USB to re-enumerate after a reset
 
+// esptool-js's `after("hard_reset")` only toggles the RTS pin, which does not
+// reliably reboot a native USB Serial/JTAG ESP32-S3 back into the app (the
+// board is left requiring a physical RESET press). Python esptool has a
+// separate `--after watchdog-reset` mode for exactly this case (arms the RTC
+// watchdog and lets it fire, no DTR/RTS involved) but esptool-js has no JS
+// equivalent — this is a direct port of ESP32S3ROM.watchdog_reset() from
+// esptool's targets/esp32s3.py, using the same three register writes over
+// the already-connected ESPLoader. Confirmed reliable on the Papilio
+// Retrocade (see esp32s3-usb-auto-reset-findings repo memory).
+async function watchdogResetEsp32S3(loader) {
+  const RTC_CNTL_WDTCONFIG0_REG = 0x60008098;
+  const RTC_CNTL_WDTCONFIG1_REG = 0x6000809c;
+  const RTC_CNTL_WDTWPROTECT_REG = 0x600080b0;
+  const RTC_CNTL_WDT_WKEY = 0x50d83aa1;
+
+  await loader.writeReg(RTC_CNTL_WDTWPROTECT_REG, RTC_CNTL_WDT_WKEY); // unlock
+  await loader.writeReg(RTC_CNTL_WDTCONFIG1_REG, 2000); // WDT timeout
+  await loader.writeReg(RTC_CNTL_WDTCONFIG0_REG, 0xd0000102); // enable WDT
+  await loader.writeReg(RTC_CNTL_WDTWPROTECT_REG, 0); // lock
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
 // A chip-level reset on native ESP32-S3 USB Serial/JTAG resets the USB
 // peripheral itself, so the OS briefly disconnects/reconnects the port —
 // killing the currently-open serial stream ("The device has been lost").
@@ -75,7 +97,7 @@ if ("serial" in navigator) {
     awaitingReconnect = false;
     serialPort = event.target;
     log("Board USB reconnected after reset, resuming serial listener…");
-    startSerialListener();
+    startSerialListener().catch((err) => log(`Serial listener failed to resume: ${err.message}`));
   });
 }
 
@@ -129,7 +151,13 @@ function updateFlashEsp32Enabled() {
 
 function updateFlashFpgaEnabled() {
   const isRecovery = els.fpgaTarget.value === "/fpga-recover";
-  els.btnFlashFpga.disabled = !(deviceIp && (isRecovery || els.fpgaFile.files[0]));
+  // Recovery has no USB-serial equivalent yet, so it still requires a known
+  // IP. The other two targets can go over WiFi OTA *or* USB serial, so the
+  // button just needs some transport (IP or an already-selected serial port)
+  // plus a bitstream file.
+  const hasTransport = Boolean(deviceIp || serialPort);
+  const hasFile = isRecovery ? Boolean(deviceIp) : Boolean(els.fpgaFile.files[0]);
+  els.btnFlashFpga.disabled = !(hasTransport && hasFile);
 }
 
 // The firmware streams the uploaded bytes verbatim to flash or JTAG SRAM —
@@ -203,13 +231,18 @@ els.btnFlashEsp32.addEventListener("click", async () => {
     });
 
     log("ESP32 firmware flashed.");
-    // NOTE: UsbJtagSerialReset was tried here for native ESP32-S3 USB
-    // Serial/JTAG ports (VID 0x303a, PID 0x1001) but it's actually the
-    // *enter-bootloader* sequence esptool-js uses at connect time — using it
-    // here left the board parked in the ROM bootloader instead of running
-    // the app (confirmed by testing). Classic hard_reset is the correct call
-    // for both native and bridged USB per esptool-js's own docs/examples.
-    await loader.after("hard_reset");
+    // Reboot the board back into the app. Only the RTC-watchdog reset (see
+    // watchdogResetEsp32S3 above) reliably reboots this board's native USB
+    // Serial/JTAG hardware without a physical RESET press — esptool-js's own
+    // reset strategies (classic RTS toggle, and the UsbJtagSerialReset used
+    // to *enter* the bootloader) leave it parked in the bootloader or
+    // requiring a manual press. Fall back to hard_reset for any other chip.
+    if (loader.chip && loader.chip.CHIP_NAME === "ESP32-S3") {
+      log("Resetting board via RTC watchdog...");
+      await watchdogResetEsp32S3(loader);
+    } else {
+      await loader.after("hard_reset");
+    }
     await espTransport.disconnect();
     espTransport = null;
 
@@ -218,17 +251,17 @@ els.btnFlashEsp32.addEventListener("click", async () => {
 
     // Give the board a moment to boot, then start listening on the same
     // serial port for its log output (WiFi status, provisioning acks).
-    setTimeout(startSerialListener, 1500);
+    setTimeout(() => {
+      startSerialListener().catch((err) => log(`Serial listener failed to start: ${err.message}`));
+    }, 1500);
 
-    // esptool-js's software reset (both the classic RTS toggle and the
-    // USB-JTAG-Serial DTR+RTS sequence) doesn't reliably reboot this board's
-    // native USB Serial/JTAG hardware into the app — a physical reset press
-    // is required every time. This is an expected step, not an error: the
-    // still-running listener (and its reconnect handling) picks up the boot
-    // log and WiFi IP automatically once you do.
+    // The board reboots itself automatically (see watchdogResetEsp32S3
+    // above) — no physical RESET press needed. The still-running listener
+    // (and its reconnect handling) picks up the boot log and WiFi IP
+    // automatically once it comes back up.
     setStatus(
       els.statusWifi,
-      "Press the RESET button on your board now to boot it and connect to WiFi."
+      "Board rebooting automatically… waiting for it to connect to WiFi."
     );
   } catch (err) {
     log(`Flash failed: ${err.message}`);
@@ -256,13 +289,18 @@ async function startSerialListener() {
   if (!serialPort) return;
   if (serialReadLoop && !serialReadLoop.stop) return; // already listening
 
-  try {
-    if (!serialPort.readable) {
+  if (!serialPort.readable) {
+    try {
       await serialPort.open({ baudRate: 115200 });
+    } catch (err) {
+      // "already open" is a harmless re-entry race — readable will be set by
+      // then. Anything else (e.g. the board is still re-enumerating right
+      // after a reset) means the port truly isn't usable yet; surface that
+      // to the caller instead of falling through to a null-readable crash.
+      if (!serialPort.readable) {
+        throw new Error(`Could not open serial port: ${err.message}`);
+      }
     }
-  } catch (err) {
-    // Port may already be open (e.g. re-entry) — safe to ignore.
-    log(`Serial open note: ${err.message}`);
   }
 
   serialReadLoop = { stop: false };
@@ -292,15 +330,52 @@ async function startSerialListener() {
         awaitingReconnect = true;
       }
     } finally {
+      // Mark this loop dead so a later startSerialListener() call knows to
+      // actually spin up a new reader instead of assuming one is still live.
+      loopState.stop = true;
       reader.releaseLock();
     }
   })();
 
-  await readableClosed;
+  // Don't block the caller on the port fully closing (that may never happen
+  // during normal operation) — just note the loop as dead once it does.
+  readableClosed.then(() => {
+    loopState.stop = true;
+  });
+}
+
+// Promise-based waiters for the serial-flash protocol (READY / PROGRESS n /
+// FPGA_FLASH_OK / FPGA_FLASH_ERROR <reason>). The serial port's readable
+// stream can only have one active reader, so this hooks into the single
+// startSerialListener() read loop instead of opening a second reader.
+let serialWaiters = [];
+
+function waitForSerialLine(matchRegex, timeoutMs, onEachLine) {
+  return new Promise((resolve, reject) => {
+    const waiter = { matchRegex, onEachLine };
+    waiter.timeoutHandle = setTimeout(() => {
+      serialWaiters = serialWaiters.filter((w) => w !== waiter);
+      reject(new Error(`Timed out waiting for board (expected ${matchRegex})`));
+    }, timeoutMs);
+    waiter.resolve = (line) => {
+      clearTimeout(waiter.timeoutHandle);
+      serialWaiters = serialWaiters.filter((w) => w !== waiter);
+      resolve(line);
+    };
+    serialWaiters.push(waiter);
+  });
 }
 
 function handleSerialLine(line) {
   log(line);
+
+  for (const waiter of serialWaiters.slice()) {
+    if (waiter.matchRegex.test(line)) {
+      waiter.resolve(line);
+    } else if (waiter.onEachLine) {
+      waiter.onEachLine(line);
+    }
+  }
 
   const ipMatch = line.match(IP_REGEX);
   if (ipMatch) setDeviceIp(ipMatch[1]);
@@ -393,12 +468,25 @@ els.btnFindIp.addEventListener("click", async () => {
 });
 
 /* ---------------------------------------------------------------------- */
-/* Step 3 — Flash FPGA bitstream via OTA HTTP POST                          */
+/* Step 3 — Flash FPGA bitstream: WiFi OTA first, USB serial fallback       */
 /* ---------------------------------------------------------------------- */
 
-els.btnFlashFpga.addEventListener("click", async () => {
-  if (!deviceIp) return;
+// Maps the target dropdown's OTA endpoint to the serial-flash protocol's
+// target keyword (see FPGA-Companion's serial_flash.h). /fpga-recover has no
+// serial equivalent yet — recovery implies the flash is corrupt, but the
+// board still needs to be reachable somehow to even ask for it, so it stays
+// OTA-only for this iteration.
+const SERIAL_FPGA_TARGET = {
+  "/fpga-update": "flash",
+  "/fpga-jtag-sram": "sram",
+};
 
+function updateFpgaProgress(loaded, total) {
+  const pct = total ? Math.round((loaded / total) * 100) : 0;
+  els.progressFpga.querySelector(".progress-bar").style.width = `${pct}%`;
+}
+
+els.btnFlashFpga.addEventListener("click", async () => {
   const target = els.fpgaTarget.value;
   const file = els.fpgaFile.files[0];
   const isRecovery = target === "/fpga-recover";
@@ -410,27 +498,50 @@ els.btnFlashFpga.addEventListener("click", async () => {
     return;
   }
 
+  if (isRecovery && !deviceIp) {
+    setStatus(els.statusFpga, "Recovery requires a known device IP — use Find My IP or send WiFi credentials first.", "error");
+    return;
+  }
+
   els.btnFlashFpga.disabled = true;
   els.progressFpga.hidden = false;
-  els.progressFpga.querySelector(".progress-bar").style.width = "0%";
+  updateFpgaProgress(0, 1);
   setStatus(els.statusFpga, "Uploading to board…");
 
   try {
     const body = isRecovery ? new ArrayBuffer(0) : await file.arrayBuffer();
-    const url = `http://${deviceIp}:${OTA_PORT}${target}`;
-    const responseText = await otaPost(url, body, (loaded, total) => {
-      const pct = total ? Math.round((loaded / total) * 100) : 0;
-      els.progressFpga.querySelector(".progress-bar").style.width = `${pct}%`;
-    });
-    log(responseText);
-    setStatus(els.statusFpga, "FPGA programmed successfully.", "ok");
-  } catch (err) {
-    log(`FPGA flash failed: ${err.message}`);
+    let usedPath = null;
+
+    if (deviceIp) {
+      try {
+        setStatus(els.statusFpga, "Uploading to board over WiFi…");
+        const url = `http://${deviceIp}:${OTA_PORT}${target}`;
+        const responseText = await otaPost(url, body, updateFpgaProgress);
+        log(responseText);
+        usedPath = "network";
+      } catch (otaErr) {
+        log(`WiFi OTA upload failed: ${otaErr.message}`);
+        if (isRecovery || !serialPort) throw otaErr; // no fallback available
+        log("Falling back to USB serial…");
+      }
+    }
+
+    if (!usedPath) {
+      if (isRecovery) throw new Error("Recovery requires a working network/IP path — no USB serial equivalent yet.");
+      if (!serialPort) throw new Error("No device IP known and no USB serial port connected.");
+      setStatus(els.statusFpga, "No IP known — flashing over USB serial (slower than WiFi)…");
+      await flashFpgaOverSerial(target, new Uint8Array(body), updateFpgaProgress);
+      usedPath = "serial";
+    }
+
     setStatus(
       els.statusFpga,
-      `Flash failed: ${err.message} (check the board is on the same network and reachable at ${deviceIp})`,
-      "error"
+      usedPath === "network" ? "FPGA programmed successfully via network." : "FPGA programmed successfully via USB serial.",
+      "ok"
     );
+  } catch (err) {
+    log(`FPGA flash failed: ${err.message}`);
+    setStatus(els.statusFpga, `Flash failed: ${err.message}`, "error");
   } finally {
     els.btnFlashFpga.disabled = false;
   }
@@ -454,3 +565,48 @@ function otaPost(url, body, onProgress) {
     xhr.send(body);
   });
 }
+
+// USB-serial fallback for Step 3 — streams the bitstream over the same
+// serial port used in Steps 1/2 instead of WiFi OTA. See
+// FPGA-Companion/src/esp32/serial_flash.h for the line protocol.
+async function flashFpgaOverSerial(target, data, onProgress) {
+  const serialTarget = SERIAL_FPGA_TARGET[target];
+  if (!serialTarget) throw new Error("This target has no USB serial equivalent yet — use WiFi OTA.");
+  if (!serialPort) throw new Error("No USB serial port connected.");
+
+  await startSerialListener(); // no-op if already running; ensures response lines are captured
+
+  const size = data.byteLength;
+  const encoder = new TextEncoder();
+  const writer = serialPort.writable.getWriter();
+
+  try {
+    const readyPromise = waitForSerialLine(/^READY$|^FPGA_FLASH_ERROR /, 10000);
+    await writer.write(encoder.encode(`FPGA_FLASH_BEGIN ${serialTarget} ${size}\n`));
+    const readyLine = await readyPromise;
+    if (readyLine.startsWith("FPGA_FLASH_ERROR")) {
+      throw new Error(`Board rejected request: ${readyLine}`);
+    }
+
+    // Long timeout — USB-Serial-JTAG is much slower than WiFi OTA for a full
+    // bitstream write, especially the SPI-flash target (erase + write).
+    const donePromise = waitForSerialLine(/^FPGA_FLASH_OK$|^FPGA_FLASH_ERROR /, 180000, (line) => {
+      const m = line.match(/^PROGRESS (\d+)/);
+      if (m) onProgress(parseInt(m[1], 10), size);
+    });
+
+    const CHUNK = 16384;
+    for (let offset = 0; offset < size; offset += CHUNK) {
+      await writer.write(data.subarray(offset, Math.min(offset + CHUNK, size)));
+    }
+
+    const resultLine = await donePromise;
+    if (resultLine.startsWith("FPGA_FLASH_ERROR")) {
+      throw new Error(`Board reported: ${resultLine}`);
+    }
+    onProgress(size, size);
+  } finally {
+    writer.releaseLock();
+  }
+}
+

@@ -33,6 +33,12 @@
   color: var(--text);
 }
 
+.flash-banner-info {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  color: var(--text);
+}
+
 .flash-log-wrap {
   margin-bottom: 1.5rem;
   border: 1px solid var(--border);
@@ -67,6 +73,20 @@
   border-radius: var(--radius-lg);
   padding: 24px;
   margin-bottom: 1.5rem;
+}
+
+.flash-advanced {
+  margin: 0.75rem 0 1rem;
+}
+
+.flash-advanced summary {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.flash-advanced .flash-row {
+  margin-top: 0.75rem;
 }
 
 .flash-step-header {

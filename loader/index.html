@@ -52,14 +52,16 @@
       <p class="flash-step-desc">
         Connect over USB for first-time setup or USB/Serial flashing. For OTA/WiFi flashing, the
         board needs its IP address — there's no browser-side network scan (like the desktop app's
-        <em>Discover Devices</em>), so use <strong>Find My IP</strong> instead: it opens the same
-        USB connection briefly and reads the IP the board reports on boot.
+        <em>Discover Devices</em>), so use <strong>Find My IP</strong> instead: it resets the board
+        over USB and reads the IP it reports on boot, no physical RESET button press needed.
       </p>
 
       <div class="flash-row">
         <button id="btn-connect" class="btn btn-outline">Connect USB</button>
         <button id="btn-find-ip" class="btn btn-outline">Find My IP</button>
+        <button id="btn-lan-scan" class="btn btn-outline" hidden>Scan LAN for Devices</button>
       </div>
+      <div id="lan-scan-results" class="flash-row"></div>
       <p class="flash-status" id="status-connect"></p>
 
       <div class="flash-row">
@@ -74,6 +76,18 @@
         <input type="text" id="device-ip-manual" placeholder="or enter IP manually, e.g. 192.168.1.42">
         <button id="btn-use-manual-ip" class="btn btn-outline">Use This IP</button>
       </div>
+
+      <p class="card-note">
+        This board switches to USB Host mode (for game controllers) a few seconds after boot,
+        which disconnects the serial console. <strong>Hold USB Console</strong> saves a flag on
+        the board (persists across reboots) that keeps the console alive instead;
+        <strong>Resume USB Host</strong> clears it and brings USB Host mode up immediately.
+      </p>
+      <div class="flash-row">
+        <button id="btn-usb-host-hold" class="btn btn-outline" disabled>Hold USB Console</button>
+        <button id="btn-usb-host-resume" class="btn btn-outline" disabled>Resume USB Host</button>
+      </div>
+      <p class="flash-status" id="status-usb-host"></p>
     </section>
 
     <!-- CARDS -->
@@ -180,15 +194,22 @@
       <div id="loader-log" class="status-log" aria-live="polite"></div>
     </section>
 
-    <div class="flash-banner" id="wifi-log-note">
+    <div class="flash-banner" id="wifi-log-note" hidden>
       <strong>No WiFi Log Monitor here.</strong> The desktop app's live UDP log viewer (port 7777)
       needs a raw network socket browsers can't open. Use the connection above (USB/Serial) for
       live boot/debug output instead, or run the
       <a href="https://github.com/Papilio-Labs/papilio-loader-mcp" target="_blank" rel="noopener">desktop app</a>
       locally for the WiFi log monitor.
     </div>
+
+    <section class="status-log-section" id="wifi-log-panel" hidden>
+      <div class="status-log-header">
+        <h2>WiFi Log Monitor (UDP 7777)</h2>
+      </div>
+      <div id="wifi-log-output" class="status-log" aria-live="polite"></div>
+    </section>
   </main>
 
-  <script type="module" src="loader.js"></script>
+  <script type="module" src="loader.bundle.js"></script>
 </body>
 </html>

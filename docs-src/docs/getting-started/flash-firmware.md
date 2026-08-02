@@ -9,6 +9,10 @@ sidebar_position: 2
 
 Before anything else works, the ESP32-S3 SuperMini needs **FPGA-Companion** firmware installed. This is a one-time step — OTA updates handle everything after this.
 
+:::tip[Prefer no install at all?]
+The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — firmware flash, WiFi setup, and first FPGA bitstream — from a single guided page in Chrome or Edge, no download or install required. Use it instead of Steps 1–3 below if you'd rather not install Papilio Loader locally.
+:::
+
 ---
 
 ## What is FPGA-Companion?

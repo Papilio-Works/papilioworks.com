@@ -18,7 +18,10 @@
       <ul class="nav-links">
         <li><a href="../#features">Features</a></li>
         <li><a href="../#cores">Cores</a></li>
+        <li><a href="../#specs">Specs</a></li>
+        <li><a href="../#gallery">Photos</a></li>
         <li><a href="../docs/">Docs</a></li>
+        <li><a href="../getting-started/">Flash</a></li>
         <li><a href="./" class="accent">Loader</a></li>
       </ul>
     </nav>
@@ -90,6 +93,22 @@
         <button id="btn-usb-host-resume" class="btn btn-outline" disabled>Resume USB Host</button>
       </div>
       <p class="flash-status" id="status-usb-host"></p>
+
+      <p class="card-note">
+        Board status (over WiFi): <strong id="device-role">unknown</strong> —
+        <strong>Resume Current App</strong> reboots into whatever's already flashed (no re-upload);
+        <strong>Reboot to Loader</strong> switches to the loader so a new FPGA/ESP32 image can be
+        flashed. If the board isn't reachable over WiFi at all, <strong>Recover via USB</strong>
+        forces it back into the loader over USB — use this <em>before</em> Connect USB/Find My IP
+        if the serial console is already open elsewhere on this page.
+      </p>
+      <div class="flash-row">
+        <button id="btn-check-status" class="btn btn-outline" disabled>Check Board Status</button>
+        <button id="btn-goto-loader" class="btn btn-outline" disabled>Reboot to Loader (OTA)</button>
+        <button id="btn-resume-app" class="btn btn-outline" disabled>Resume Current App (OTA)</button>
+        <button id="btn-recover-usb" class="btn btn-outline">Recover via USB</button>
+      </div>
+      <p class="flash-status" id="status-recover"></p>
     </section>
 
     <!-- CARDS -->
@@ -120,17 +139,16 @@
           <span id="fpga-file-label">Choose bitstream .bin&hellip;</span>
         </label>
 
-        <details class="adv-details">
-          <summary>⚙️ Advanced Options</summary>
-          <div class="flash-row">
-            <label class="adv-label" for="fpga-target">Target</label>
-            <select id="fpga-target">
-              <option value="/fpga-update">SPI Flash (persistent)</option>
-              <option value="/fpga-jtag-sram">JTAG SRAM (fast, volatile)</option>
-              <option value="/fpga-recover">Recovery (erase bitstream region, OTA only)</option>
-            </select>
-          </div>
-        </details>
+        <select id="fpga-target">
+          <option value="/fpga-update">SPI Flash (persistent)</option>
+          <option value="/fpga-jtag-sram">JTAG SRAM (fast, volatile)</option>
+        </select>
+
+        <p class="card-note">
+          <strong>SPI Flash</strong> survives a power cycle (the board briefly loads a small
+          bridge bitstream first, then writes yours to the FPGA's own flash chip).
+          <strong>JTAG SRAM</strong> is faster but lost on power cycle.
+        </p>
 
         <button id="btn-flash-fpga" class="btn btn-primary" disabled>⚡ Flash FPGA</button>
         <div class="progress" id="progress-fpga" hidden>
@@ -154,9 +172,20 @@
           </label>
         </div>
         <p class="card-note">
-          OTA firmware updates only work once a board is already running FPGA-Companion — a
+          OTA firmware updates only work once a board is already running the loader — a
           brand-new board needs USB/Serial the first time.
         </p>
+
+        <div class="method-group" id="esp32-usb-target-group" role="radiogroup" aria-label="ESP32 USB/Serial flash target">
+          <label class="method-option">
+            <input type="radio" name="esp32-usb-target" value="full" checked>
+            <span>🆕 Fresh/blank board (whole chip, offset 0x0)</span>
+          </label>
+          <label class="method-option">
+            <input type="radio" name="esp32-usb-target" value="slot">
+            <span>🔁 Board already runs the loader (app image only, into the inactive slot)</span>
+          </label>
+        </div>
 
         <div class="source-group" role="radiogroup" aria-label="ESP32 firmware source">
           <label class="method-option">
@@ -210,6 +239,8 @@
       </div>
       <div id="wifi-log-output" class="status-log" aria-live="polite"></div>
     </section>
+
+    <p class="loader-version" id="app-version"></p>
   </main>
 
   <script type="module" src="loader.bundle.js"></script>

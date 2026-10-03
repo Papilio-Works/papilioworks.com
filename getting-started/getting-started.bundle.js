@@ -9539,6 +9539,7 @@ function initFlashPage(doc = document) {
   let deviceIp = null;
   let awaitingReconnect = false;
   let bundledFirmware = null;
+  const assetVersion = true ? "0.4.0" : "dev";
   if (!("serial" in navigator)) {
     els.unsupportedBanner.hidden = false;
     [els.btnConnect, els.btnFlashEsp32, els.btnSendWifi, els.btnFlashFpga, els.btnFindIp, els.btnOpenLog, els.btnCloseLog].forEach(
@@ -9547,7 +9548,7 @@ function initFlashPage(doc = document) {
     return;
   }
   if (els.esp32BundledVersion) {
-    fetch("firmware/manifest.json").then((resp) => {
+    fetch(`firmware/manifest.json?v=${encodeURIComponent(assetVersion)}`).then((resp) => {
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       return resp.json();
     }).then((manifest) => {
@@ -9587,6 +9588,18 @@ function initFlashPage(doc = document) {
     if (!reader) return;
     if (reader.isRunning) return;
     await reader.start();
+  }
+  async function startSerialListenerWithRetry(maxAttempts = 3, delayMs = 750) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await startSerialListener();
+        return;
+      } catch (err2) {
+        if (attempt === maxAttempts) throw err2;
+        log(`USB serial port not ready (attempt ${attempt}/${maxAttempts}), retrying...`);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
   }
   async function closeSerialSession() {
     if (reader?.isRunning) await reader.stop();
@@ -9680,11 +9693,14 @@ function initFlashPage(doc = document) {
           return;
         }
       } else {
-        const resp = await fetch(`firmware/${bundledFirmware.fileName}`);
+        const resp = await fetch(
+          `firmware/${bundledFirmware.fileName}?v=${encodeURIComponent(assetVersion)}`
+        );
         if (!resp.ok) throw new Error(`Firmware download failed (HTTP ${resp.status})`);
         data = new Uint8Array(await resp.arrayBuffer());
         setStatus(els.statusEsp32, "Connecting to ESP32\u2026");
       }
+      await startSerialListenerWithRetry();
       await flashEsp32(serialPort, data, {
         onLog: log,
         onProgress: (written, total) => {
@@ -9804,6 +9820,7 @@ function initFlashPage(doc = document) {
         const serialTarget = SERIAL_FPGA_TARGET[target];
         if (!serialTarget) throw new Error("This target has no USB serial equivalent yet \u2014 use WiFi OTA.");
         setStatus(els.statusFpga, "No IP known \u2014 flashing over USB serial (slower than WiFi)\u2026");
+        await startSerialListenerWithRetry();
         await flashFpgaOverSerial(serialPort, reader, serialTarget, new Uint8Array(body), updateFpgaProgress);
         await resumeAppAfterFpga();
         await closeSerialSession();

@@ -7,13 +7,32 @@ sidebar_position: 2
 
 # Flash the Firmware
 
-Before anything else works, the ESP32-S3 SuperMini needs **FPGA-Companion** firmware installed. This is a one-time step — OTA updates handle everything after this.
+Before anything else works, the ESP32-S3 SuperMini needs the **Papilio ESP Bootloader** and a compatible **FPGA-Companion** application. The bootloader is a small, always-resident recovery and update system in the ESP32's factory partition; the Companion app runs in one of its OTA application slots.
 
 :::tip[Prefer no install at all?]
-The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — firmware flash, WiFi setup, and first FPGA bitstream — from a single guided page in Chrome or Edge, no download or install required. Use it instead of Steps 1–3 below if you'd rather not install Papilio Loader locally.
+The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — bootloader recovery, WiFi setup, and first FPGA bitstream — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
 :::
 
 ---
+
+## What is the Papilio ESP Bootloader?
+
+The Papilio ESP Bootloader is the board's permanent factory-resident firmware. It provides:
+
+- USB firmware recovery and programming
+- WiFi provisioning and OTA application updates
+- FPGA programming and recovery
+- A/B application slots so an interrupted application update can be rolled back
+
+The bootloader is independent of FPGA-Companion. After the one-time migration, you can recover or update the board even if the Companion application is missing or not starting.
+
+The current 4 MB flash layout is:
+
+| Partition | Address | Purpose |
+| --- | ---: | --- |
+| `factory` | `0x20000` | Papilio ESP Bootloader |
+| `ota_0` | `0x100000` | Active FPGA-Companion application |
+| `ota_1` | `0x280000` | Rollback FPGA-Companion application |
 
 ## What is FPGA-Companion?
 
@@ -32,29 +51,31 @@ Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com
 
 - ESP32-S3 SuperMini (not yet plugged into the Retrocade for this step)
 - USB-C cable
-- Computer with a USB port (Windows users can use the one-click installer; Mac/Linux need **Python 3.12+**)
-- The FPGA-Companion firmware binary (`.bin` file)
+- Chrome or Edge with Web Serial support for the browser-based setup, or Papilio Loader for manual flashing
+- A USB data cable, not a charge-only cable
 
 ---
 
-## Step 1: Download the Firmware
+## Recommended: Browser-Based Setup
 
-1. Go to the [FPGA-Companion releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) — the current release is **v1.0.1**
-2. Download **`fpga-companion-esp32s3-v1.0.1-merged.bin`**
+The [browser-based Getting Started flasher](https://papilioworks.com/getting-started/) is the easiest way to prepare a blank board. It downloads the current recovery image and performs the complete first-time flow:
 
-This merged image bundles the bootloader, partition table, and application into a single file that flashes at address `0x0` — the simplest option for a fresh ESP32-S3 SuperMini.
+1. Hold **BOOT** while powering the ESP32-S3 over USB.
+2. Open the Getting Started flasher in Chrome or Edge.
+3. Click **Connect USB**, select the ESP32-S3 port, then click **Install / Recover Board**.
+4. Wait for **ESP32 flashed**. The page closes and reopens the USB connection while the board re-enumerates.
+5. Enter WiFi credentials and click **Send to Board**.
+6. Continue with the page's FPGA bitstream step.
 
-:::tip
-Advanced users who prefer to flash the bootloader, partition table, and app as separate files (e.g. for OTA-only application updates) can instead download `fpga-companion-esp32s3-v1.0.1.zip`, which contains the individual binaries and their flash offsets — see the release notes on the [releases page](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/latest) for details.
-:::
+The recovery image writes the factory bootloader and a compatible Companion application in one USB operation. Use it for a new board or to migrate a board that still uses the older application-centered layout.
 
-:::warning[No WiFi out of the box]
-The pre-built binary ships with a **placeholder WiFi SSID** — it will not connect to your network. WiFi is only needed for OTA core pushing and remote logging; USB flashing and SD-card core loading work fully offline. If you want WiFi features, see [Connect to WiFi](./load-a-core#step-1-wifi-is-optional-and-not-yet-configurable-from-the-osd) on the next page for how to build your own binary with real credentials.
+:::warning[Use the recovery image only for migration]
+Do not flash a normal FPGA-Companion application image over the factory partition. After migration, update the application through the Papilio ESP Bootloader using OTA or the Papilio Loader recovery workflow.
 :::
 
 ---
 
-## Step 2: Install Papilio Loader
+## Manual Setup with Papilio Loader
 
 Papilio Loader is the official tool for flashing Papilio hardware.
 
@@ -82,25 +103,25 @@ Papilio Loader can do a lot more than first-time flashing — OTA updates over W
 
 ---
 
-## Step 3: Flash the Firmware
+## Manual Migration
 
 1. Hold the **BOOT button** on the ESP32-S3 SuperMini
 2. Plug in the USB-C cable while holding BOOT
-3. Release BOOT after 2 seconds — the device is now in bootloader mode
-4. In the Papilio Loader web UI, under **ESP32 Flash**, select **USB/Serial**, then click **Click to select .bin or .elf file** and choose the merged `.bin` file you downloaded
-5. Click **⚙️ Advanced Options** and set **Flash Address (hex)** to `0x0` — the merged image includes the bootloader, so it must be written starting at address zero, not the default `0x10000` app partition
-6. Click **Flash ESP32** and wait for the flash to complete (~30 seconds)
-7. Unplug and replug USB-C — the green LED should blink
+3. Release BOOT after 2 seconds — the device is now in ROM download mode
+4. Use the Papilio ESP Bootloader recovery image from the browser-based Getting Started flow, or the matching migration image from the [FPGA-Companion v2.0.0 release](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0)
+5. In Papilio Loader, select **USB/Serial**, choose the recovery `.bin`, and set **Flash Address (hex)** to `0x0`
+6. Click **Flash ESP32** and wait for the flash to complete
+7. Reconnect to USB, provision WiFi, and use the bootloader-managed OTA flow for future application updates
 
 ---
 
-## Step 4: Verify It Worked
+## Verify the Migration
 
 1. After reflashing, unplug USB from your computer
 2. Plug the ESP32-S3 SuperMini into the Retrocade board header
 3. Connect HDMI to a monitor
 4. Power via USB-C into the Retrocade's USB-C port
-5. You should see the FPGA-Companion OSD on your screen
+5. You should see the FPGA-Companion OSD on your screen. The bootloader remains installed in the factory partition and continues to provide recovery and update services independently of the OSD application.
 
 When fully assembled, the system looks like this — ESP32-S3 in its header at the top-left, Tang Primer 20K in the SO-DIMM socket:
 
@@ -119,7 +140,8 @@ If you see nothing on screen, check that the HDMI cable is connected to the **Re
 | Device not detected by computer | Try a different USB-C cable — many are charge-only with no data lines |
 | Flash fails with "port not found" | Check Device Manager (Windows) or `ls /dev/tty*` (Linux/Mac) for the correct port |
 | Nothing on HDMI after flash | Confirm ESP32-S3 is in the correct header orientation |
-| Green LED doesn't blink | Re-flash. Confirm you used the Retrocade-specific binary, not a generic FPGA-Companion build |
+| Green LED doesn't blink | Re-flash the recovery image at `0x0`. Confirm you used the Retrocade-specific migration image, not an app-only FPGA-Companion build |
+| WiFi provisioning says the serial port cannot be opened | Wait for the board to finish rebooting and USB re-enumeration, then retry **Send to Board** |
 
 ---
 

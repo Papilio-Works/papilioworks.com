@@ -31,10 +31,10 @@ The [browser-based Getting Started flasher](https://papilioworks.com/getting-sta
 1. Hold **BOOT** while powering the ESP32-S3 over USB.
 2. Open the Getting Started flasher in Chrome or Edge.
 3. Click **Connect USB**, select the ESP32-S3 port, then click **Install / Recover Board**.
-4. Wait for **ESP32 flashed**. The page closes and reopens the USB connection while the board re-enumerates.
-5. Enter WiFi credentials and click **Send to Board**.
-6. Click **Install Latest A2600 Core**. The page uses WiFi when the board IP is known, or USB serial when it is not.
-7. Insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The ROM is written to the card and requested from the active core.
+4. Wait for **ESP32 flashed**. The board reboots and its USB port re-enumerates; the page automatically re-acquires the new port.
+5. Enter WiFi credentials and click **Send to Board**. If it reports *Send failed*, unplug and replug the USB cable, click **Find My IP**, select the port, and click **Send to Board** again.
+6. **Step 3 — Install the A2600 core:** click **Install Latest A2600 Core**. The page uses WiFi when the board IP is known, or USB serial when it is not.
+7. **Step 4 — Load a demo game ROM:** insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The ROM is written to the card and requested from the A2600 core.
 
 The ROM upload requires the board to be reachable over WiFi because the Companion's `/rom-load` endpoint writes to the SD card. If the page reports that the ROM was saved but not inserted, close the on-screen display and retry the ROM action.
 

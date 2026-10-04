@@ -15,6 +15,38 @@ The **[browser-based Getting Started flasher](https://papilioworks.com/getting-s
 
 ---
 
+## How the Parts Fit Together
+
+Your Retrocade is made of a few pieces of hardware and a few pieces of software. Each piece has one job:
+
+| Part | What it is | What it does |
+|---|---|---|
+| **FPGA core** (for example, the Atari 2600 core) | A design that runs on the FPGA | Recreates a game system and runs the game |
+| **ROM** (a game) | A game file on the SD card | The game the core plays |
+| **FPGA-Companion** | An app on the ESP32-S3 | Loads ROMs into the core, reads your game controllers, and shows the on-screen menu |
+| **Papilio ESP Bootloader** | A small program on the ESP32-S3 | Receives new software and writes it to the board |
+| **Papilio Loader** | Software on your computer | Sends new software to the board |
+
+**The Papilio ESP Bootloader** works with Papilio Loader to install the programs that run on the board: ESP32 user apps like FPGA-Companion, and FPGA bit files like the Atari 2600 core. The bootloader only runs when the board needs to be programmed. The rest of the time your app runs, and the bootloader stays out of the way.
+
+**FPGA-Companion** is an ESP32 user app. It runs whenever you're playing. It loads ROMs into the running FPGA game core, such as the Atari 2600 core, and passes your controller's buttons to it.
+
+**Papilio Loader** runs as a desktop application, a website, or a command-line utility. It uses the bootloader to write ESP32 user apps and FPGA cores to the board, over WiFi or USB. It can also send game ROMs to the board over WiFi, where FPGA-Companion saves them to the SD card and loads them into the core.
+
+```text
+Your computer                     Your Retrocade
+┌──────────────────┐   USB or   ┌────────────────────────────────────────────┐
+│  Papilio Loader  │───WiFi────▶│ ESP32-S3                                   │
+└──────────────────┘            │   Papilio ESP Bootloader ─ writes new apps │
+                                │   FPGA-Companion app ──── loads ROMs       │
+                                │            │                    │          │
+                                │            ▼                    ▼          │
+                                │   FPGA game core ◀──────── SD card (ROMs)  │
+                                └────────────────────────────────────────────┘
+```
+
+---
+
 ## What is the Papilio ESP Bootloader?
 
 The Papilio ESP Bootloader is a small program that is permanently installed on the board's ESP32. It is what makes the board easy to program and hard to break. In order of importance, it lets you:

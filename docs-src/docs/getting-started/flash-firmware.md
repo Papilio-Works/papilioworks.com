@@ -26,6 +26,8 @@ The Papilio ESP Bootloader is the board's permanent factory-resident firmware. I
 
 The bootloader is independent of FPGA-Companion. After the one-time migration, you can recover or update the board even if the Companion application is missing or not starting.
 
+**Papilio Loader programs both sides of the board:** it can flash ESP32 firmware and FPGA bitstreams over **USB** or **WiFi**. Use USB for first-time recovery and whenever the board is not yet on your network; use WiFi for normal firmware updates and FPGA programming after the bootloader and WiFi have been configured.
+
 The current 4 MB flash layout is:
 
 | Partition | Address | Purpose |
@@ -77,7 +79,10 @@ Do not flash a normal FPGA-Companion application image over the factory partitio
 
 ## Manual Setup with Papilio Loader
 
-Papilio Loader is the official tool for flashing Papilio hardware.
+Papilio Loader is the official tool for programming Papilio hardware. It can flash **ESP32 firmware** and **FPGA bitstreams** over **USB** or **WiFi**:
+
+- **USB:** recover or program the ESP32, and flash an FPGA bitstream when WiFi is unavailable.
+- **WiFi:** update the ESP32 application and program or recover the FPGA remotely after the board has joined your network.
 
 **Windows users:** the easiest route is the one-click installer — no Python needed. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases), install it, launch **Papilio Loader** from the Start Menu, then right-click the system tray icon and choose **Open Web Interface**.
 

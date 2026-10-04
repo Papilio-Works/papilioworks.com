@@ -5,7 +5,7 @@
   "publishedAt": "2026-10-02T05:29:59Z",
   "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
   "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0",
-  "fetchedAt": "2026-10-04T20:10:06.576Z",
+  "fetchedAt": "2026-10-04T20:35:33.355Z",
   "components": {
     "bootloader": {
       "name": "Papilio ESP Bootloader",
@@ -25,7 +25,7 @@
       "fileName": "papilio-migration-v2.0.0-merged.bin",
       "size": 2541744,
       "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
-      "sha256": "9eedbc44c11932999536cf67a35f8f08cfdbc06b1562e11e629bd85d2044947a",
+      "sha256": "b634bd99814243b15d6dd80b1b999b7637e0c269c2f9ea05eff62cdefbcd8434",
       "release": "v2.0.0"
     },
     "a2600Core": {

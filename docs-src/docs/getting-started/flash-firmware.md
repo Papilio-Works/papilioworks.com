@@ -7,7 +7,7 @@ sidebar_position: 2
 
 # Flash the Firmware
 
-Before anything else works, the ESP32-S3 SuperMini needs two pieces of software: the **Papilio ESP Bootloader**, which lets you program and recover the board, and the **FPGA-Companion** app, which runs your games and handles ROMs and controllers. This page installs both in one step.
+Before anything else works, the ESP32-S3 SuperMini needs two pieces of software: the **Papilio ESP Bootloader**, which lets you program and recover the board, and the **FPGA-Companion** app, which provides the on-screen menu, ROM loading, and controller support for the game core running on the FPGA. This page installs both in one step.
 
 :::tip[Prefer no install at all?]
 The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — bootloader recovery, WiFi setup, the latest A2600 core, and the Papilio Splash ROM — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
@@ -19,7 +19,7 @@ The **[browser-based Getting Started flasher](https://papilioworks.com/getting-s
 
 The Papilio ESP Bootloader is a small program that is permanently installed on the board's ESP32. It is what makes the board easy to program and hard to break. In order of importance, it lets you:
 
-1. **Program the FPGA.** Load a new game core or your own design onto the FPGA, over USB or over WiFi, with no special programmer.
+1. **Program the FPGA.** Load a game core or your own design onto the FPGA, over USB or over WiFi, with no special programmer. This is how you switch to a different core: program the new core with Papilio Loader.
 2. **Update the ESP32 firmware.** Install new versions of FPGA-Companion over USB or over WiFi. Use USB the first time, then WiFi for everyday updates so the board can stay plugged into your TV.
 3. **Recover a board that won't start.** If an update goes wrong or the board shows nothing on screen, reconnect USB and reinstall. The bootloader is kept separate from FPGA-Companion, so a bad update can't lock you out.
 4. **Join your WiFi network.** You enter your network name and password once, and the board remembers them.
@@ -41,15 +41,16 @@ The bootloader also keeps two application slots, so a failed update can be rolle
 
 ## What is FPGA-Companion?
 
-FPGA-Companion is the open-source app that runs on the ESP32-S3 whenever you're playing. The bootloader gets software onto the board; the Companion is what you use day to day. It manages your game cores, loads your ROMs, and connects your controllers.
+FPGA-Companion is the open-source app that runs on the ESP32-S3 whenever you're playing. The bootloader and Papilio Loader get software onto the board; the Companion is what you use day to day with the core that is running on the FPGA.
 
 In order of importance, it:
 
-1. **Manages game cores.** Choose and load the core for the system you want to play, such as Atari 2600, NES, SNES, or C64.
-2. **Loads and manages ROMs.** Browse games and disk images on the SD card and load them into the running core. You can also send a ROM to the board over WiFi.
-3. **Provides game controller input.** Pair a Bluetooth gamepad, and the Companion passes its buttons to the active core.
-4. **Shows the on-screen menu (OSD).** Pick cores, ROMs, and settings from your TV with your controller.
-5. **Handles the connection to the FPGA** so cores can be started, swapped, and updated.
+1. **Loads and manages ROMs.** Browse games on the SD card from the on-screen menu and load them into the running core. You can also send a ROM to the board over WiFi.
+2. **Provides game controller input.** Pair a Bluetooth gamepad, and the Companion passes its buttons to the core.
+3. **Shows the on-screen menu (OSD).** Pick ROMs and adjust settings from your TV with your controller.
+4. **Recognizes the running core** and shows the menu and controls that match it.
+
+The Companion does not program the FPGA or switch cores. The core on the FPGA is whichever one you last programmed with Papilio Loader. The Atari 2600 and Commodore 64 cores are working today; the NES and SNES cores are still in progress.
 
 Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com/Papilio-Retrocade/FPGA-Companion)
 

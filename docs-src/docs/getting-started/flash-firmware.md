@@ -7,7 +7,7 @@ sidebar_position: 2
 
 # Flash the Firmware
 
-Before anything else works, the ESP32-S3 SuperMini needs the **Papilio ESP Bootloader** and a compatible **FPGA-Companion** application. The bootloader is a small, always-resident recovery and update system in the ESP32's factory partition; the Companion app runs in one of its OTA application slots.
+Before anything else works, the ESP32-S3 SuperMini needs two pieces of software: the **Papilio ESP Bootloader**, which lets you program and recover the board, and the **FPGA-Companion** app, which runs your games and handles ROMs and controllers. This page installs both in one step.
 
 :::tip[Prefer no install at all?]
 The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — bootloader recovery, WiFi setup, the latest A2600 core, and the Papilio Splash ROM — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
@@ -17,18 +17,19 @@ The **[browser-based Getting Started flasher](https://papilioworks.com/getting-s
 
 ## What is the Papilio ESP Bootloader?
 
-The Papilio ESP Bootloader is the board's permanent factory-resident firmware. It provides:
+The Papilio ESP Bootloader is a small program that is permanently installed on the board's ESP32. It is what makes the board easy to program and hard to break. In order of importance, it lets you:
 
-- USB firmware recovery and programming
-- WiFi provisioning and OTA application updates
-- FPGA programming and recovery
-- A/B application slots so an interrupted application update can be rolled back
+1. **Program the FPGA.** Load a new game core or your own design onto the FPGA, over USB or over WiFi, with no special programmer.
+2. **Update the ESP32 firmware.** Install new versions of FPGA-Companion over USB or over WiFi. Use USB the first time, then WiFi for everyday updates so the board can stay plugged into your TV.
+3. **Recover a board that won't start.** If an update goes wrong or the board shows nothing on screen, reconnect USB and reinstall. The bootloader is kept separate from FPGA-Companion, so a bad update can't lock you out.
+4. **Join your WiFi network.** You enter your network name and password once, and the board remembers them.
 
-The bootloader is independent of FPGA-Companion. After the one-time migration, you can recover or update the board even if the Companion application is missing or not starting.
+**Papilio Loader uses the bootloader to program both sides of the board:** the ESP32 firmware and the FPGA bitstream, over **USB** or **WiFi**. Use USB for first-time setup and whenever the board isn't on your network yet; use WiFi once it is.
 
-**Papilio Loader programs both sides of the board:** it can flash ESP32 firmware and FPGA bitstreams over **USB** or **WiFi**. Use USB for first-time recovery and whenever the board is not yet on your network; use WiFi for normal firmware updates and FPGA programming after the bootloader and WiFi have been configured.
+<details>
+<summary>Technical details: flash layout</summary>
 
-The current 4 MB flash layout is:
+The bootloader also keeps two application slots, so a failed update can be rolled back to the last working version automatically. The current 4 MB flash layout is:
 
 | Partition | Address | Purpose |
 | --- | ---: | --- |
@@ -36,17 +37,19 @@ The current 4 MB flash layout is:
 | `ota_0` | `0x100000` | Active FPGA-Companion application |
 | `ota_1` | `0x280000` | Rollback FPGA-Companion application |
 
+</details>
+
 ## What is FPGA-Companion?
 
-FPGA-Companion is the open-source runtime firmware that runs on the ESP32-S3 after the Papilio ESP Bootloader starts it. The Companion manages the day-to-day game-console experience: it communicates with the FPGA, controls which game core is active, and connects that core to the board's storage and controllers.
+FPGA-Companion is the open-source app that runs on the ESP32-S3 whenever you're playing. The bootloader gets software onto the board; the Companion is what you use day to day. It manages your game cores, loads your ROMs, and connects your controllers.
 
-It provides:
-- The on-screen display (OSD) menu
-- Game-core selection and loading, including programming cores into the FPGA's persistent SPI flash or temporary JTAG SRAM
-- ROM and disk-image management from the SD card, including loading a selected image into the active core
-- Game-controller input handling, including Bluetooth gamepad pairing and forwarding player controls to the active core
-- WiFi OTA updates for FPGA bitfiles
-- JTAG communication with the FPGA
+In order of importance, it:
+
+1. **Manages game cores.** Choose and load the core for the system you want to play, such as Atari 2600, NES, SNES, or C64.
+2. **Loads and manages ROMs.** Browse games and disk images on the SD card and load them into the running core. You can also send a ROM to the board over WiFi.
+3. **Provides game controller input.** Pair a Bluetooth gamepad, and the Companion passes its buttons to the active core.
+4. **Shows the on-screen menu (OSD).** Pick cores, ROMs, and settings from your TV with your controller.
+5. **Handles the connection to the FPGA** so cores can be started, swapped, and updated.
 
 Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com/Papilio-Retrocade/FPGA-Companion)
 

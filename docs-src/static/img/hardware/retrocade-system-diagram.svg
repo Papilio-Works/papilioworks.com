@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title id="t">How the Retrocade hardware and software fit together</title>
+  <desc id="d">Papilio Loader on your computer sends ESP32 apps and FPGA cores to the Papilio ESP Bootloader over USB or WiFi, and game ROMs to the FPGA-Companion app over WiFi. Both run on the ESP32-S3 SuperMini. The bootloader programs the game core on the Gowin FPGA on the Tang Primer 20K. FPGA-Companion reads games from the SD card on the Tang Primer 20K and loads them into the game core.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="640" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+
+  <!-- Your computer -->
+  <rect x="150" y="20" width="600" height="80" rx="10" fill="#e8f0fe" stroke="#3b6fd4" stroke-width="2"/>
+  <text x="450" y="52" text-anchor="middle" font-size="22" font-weight="700" fill="#1f2328">Papilio Loader</text>
+  <text x="450" y="78" text-anchor="middle" font-size="15" fill="#334155">on your computer: desktop app, website, or command-line utility</text>
+
+  <!-- Retrocade board -->
+  <rect x="20" y="170" width="860" height="450" rx="12" fill="#f6f8fa" stroke="#8c959f" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="36" y="196" font-size="17" font-weight="700" fill="#57606a">Papilio Retrocade board</text>
+
+  <!-- ESP32-S3 -->
+  <rect x="45" y="215" width="810" height="190" rx="10" fill="#fff7e6" stroke="#d9822b" stroke-width="2"/>
+  <text x="60" y="240" font-size="17" font-weight="700" fill="#1f2328">ESP32-S3 SuperMini</text>
+
+  <rect x="70" y="260" width="360" height="120" rx="8" fill="#fdeccf" stroke="#d9822b"/>
+  <text x="250" y="295" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2328">Papilio ESP Bootloader</text>
+  <text x="250" y="322" text-anchor="middle" font-size="14" fill="#334155">Writes new apps and FPGA cores</text>
+  <text x="250" y="344" text-anchor="middle" font-size="14" fill="#334155">Only runs when the board is being programmed</text>
+
+  <rect x="470" y="260" width="360" height="120" rx="8" fill="#e3f6e8" stroke="#2e9b4f"/>
+  <text x="650" y="295" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2328">FPGA-Companion app</text>
+  <text x="650" y="322" text-anchor="middle" font-size="14" fill="#334155">Loads ROMs into the game core</text>
+  <text x="650" y="344" text-anchor="middle" font-size="14" fill="#334155">Reads controllers and shows the menu</text>
+
+  <!-- Tang Primer 20K -->
+  <rect x="45" y="440" width="810" height="160" rx="10" fill="#f1e9fb" stroke="#7e57c2" stroke-width="2"/>
+  <text x="60" y="465" font-size="17" font-weight="700" fill="#1f2328">Tang Primer 20K</text>
+  <rect x="70" y="480" width="370" height="95" rx="8" fill="#e6dcf7" stroke="#7e57c2"/>
+  <text x="255" y="518" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2328">Gowin GW2A FPGA</text>
+  <text x="255" y="544" text-anchor="middle" font-size="14" fill="#334155">Runs the game core, such as Atari 2600</text>
+
+  <!-- SD card -->
+  <rect x="620" y="480" width="210" height="95" rx="8" fill="#e6f4f8" stroke="#2a8aa6" stroke-width="2"/>
+  <text x="725" y="518" text-anchor="middle" font-size="19" font-weight="700" fill="#1f2328">SD card</text>
+  <text x="725" y="544" text-anchor="middle" font-size="14" fill="#334155">Game ROMs</text>
+
+  <!-- Arrows -->
+  <g fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M250 100 V258"/>
+    <path d="M650 100 V258"/>
+    <path d="M250 380 V478"/>
+    <path d="M520 380 V527 H442"/>
+    <path d="M725 478 V382"/>
+  </g>
+
+  <!-- Arrow labels -->
+  <g font-size="14" font-weight="600" fill="#1f2328">
+    <text x="262" y="142">USB or WiFi: apps and cores</text>
+    <text x="662" y="142">WiFi: game ROMs</text>
+    <text x="262" y="428">programs the core</text>
+    <text x="532" y="470">loads ROMs</text>
+    <text x="737" y="425">games</text>
+  </g>
+</svg>

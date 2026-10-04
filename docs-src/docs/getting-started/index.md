@@ -33,6 +33,7 @@ The FPGA core module. Contains:
 - **128 MB DDR3** on-module
 - **32 Mbit NOR Flash**
 - **27 MHz** oscillator
+- **microSD** card slot
 - Plugs directly into the Retrocade header
 
 The FPGA is where the game system runs. It does nothing until it is programmed with a game core.
@@ -66,17 +67,7 @@ Each piece of software has one job:
 
 **Papilio Loader** runs as a desktop application, a website, or a command-line utility. It uses the bootloader to write ESP32 user apps and FPGA cores to the board, over WiFi or USB. It can also send game ROMs to the board over WiFi, where FPGA-Companion saves them to the SD card and loads them into the core.
 
-```text
-Your computer                     Your Retrocade
-┌──────────────────┐   USB or   ┌────────────────────────────────────────────┐
-│  Papilio Loader  │───WiFi────▶│ ESP32-S3                                   │
-└──────────────────┘            │   Papilio ESP Bootloader ─ writes new apps │
-                                │   FPGA-Companion app ──── loads ROMs       │
-                                │            │                    │          │
-                                │            ▼                    ▼          │
-                                │   FPGA game core ◀──────── SD card (ROMs)  │
-                                └────────────────────────────────────────────┘
-```
+![Papilio Loader on your computer sends apps and FPGA cores to the bootloader and ROMs to FPGA-Companion on the ESP32-S3. The bootloader programs the Gowin FPGA on the Tang Primer 20K, and FPGA-Companion loads ROMs from the SD card on the Tang Primer 20K into the game core.](../../static/img/hardware/retrocade-system-diagram.svg)
 
 ### What is the Papilio ESP Bootloader?
 

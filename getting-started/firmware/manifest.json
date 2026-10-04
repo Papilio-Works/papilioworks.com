@@ -4,7 +4,22 @@
   "size": 2541744,
   "publishedAt": "2026-10-02T05:29:59Z",
   "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
-  "fetchedAt": "2026-10-04T18:56:02.122Z",
+  "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0",
+  "fetchedAt": "2026-10-04T19:06:57.013Z",
+  "components": {
+    "bootloader": {
+      "name": "Papilio ESP Bootloader",
+      "release": "v0.1.0",
+      "releaseUrl": "https://github.com/Papilio-Labs/papilio-esp-bootloader/releases/tag/v0.1.0",
+      "repoUrl": "https://github.com/Papilio-Labs/papilio-esp-bootloader"
+    },
+    "companion": {
+      "name": "FPGA-Companion",
+      "release": "v2.0.0",
+      "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0",
+      "repoUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion"
+    }
+  },
   "artifacts": {
     "bootloader": {
       "fileName": "papilio-migration-v2.0.0-merged.bin",

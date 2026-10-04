@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-labelledby="t d" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title id="t">How the Papilio ESP Bootloader starts and hands over to FPGA-Companion</title>
+  <desc id="d">On power-up or reset the board checks for a working app. If there is one, FPGA-Companion runs. If there is not, because the board is new or the app failed to start, the Papilio ESP Bootloader runs. While FPGA-Companion runs, Papilio Loader can ask for the bootloader over USB or WiFi. When programming finishes, the bootloader resumes the app automatically. As a last resort, hold BOOT, press RESET, then use Recover via USB in Papilio Loader.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="560" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+
+  <!-- Start -->
+  <rect x="30" y="250" width="150" height="60" rx="30" fill="#eef2f6" stroke="#64748b" stroke-width="2"/>
+  <text x="105" y="286" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2328">Power on or reset</text>
+
+  <!-- Decision -->
+  <polygon points="330,220 450,280 330,340 210,280" fill="#eef2f6" stroke="#64748b" stroke-width="2"/>
+  <text x="330" y="276" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2328">Is a working app</text>
+  <text x="330" y="298" text-anchor="middle" font-size="15" font-weight="700" fill="#1f2328">installed?</text>
+
+  <!-- FPGA-Companion -->
+  <rect x="560" y="40" width="310" height="120" rx="10" fill="#e3f6e8" stroke="#2e9b4f" stroke-width="2"/>
+  <text x="715" y="82" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2328">FPGA-Companion runs</text>
+  <text x="715" y="110" text-anchor="middle" font-size="14" fill="#334155">You are playing games.</text>
+  <text x="715" y="132" text-anchor="middle" font-size="14" fill="#334155">The bootloader stays out of the way.</text>
+
+  <!-- Bootloader -->
+  <rect x="560" y="400" width="310" height="120" rx="10" fill="#fdeccf" stroke="#d9822b" stroke-width="2"/>
+  <text x="715" y="442" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2328">Papilio ESP Bootloader runs</text>
+  <text x="715" y="470" text-anchor="middle" font-size="14" fill="#334155">Waits for Papilio Loader to send</text>
+  <text x="715" y="492" text-anchor="middle" font-size="14" fill="#334155">new apps or FPGA cores.</text>
+
+  <!-- Last resort -->
+  <rect x="30" y="470" width="480" height="70" rx="10" fill="#f6f8fa" stroke="#8c959f" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="270" y="498" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2328">Last resort if USB will not connect</text>
+  <text x="270" y="520" text-anchor="middle" font-size="14" fill="#334155">Hold BOOT, press RESET, then use Recover via USB</text>
+
+  <!-- Arrows -->
+  <g fill="none" stroke="#334155" stroke-width="2.5" marker-end="url(#arrow)">
+    <path d="M180 280 H208"/>
+    <path d="M330 220 V100 H558"/>
+    <path d="M330 340 V440 H558"/>
+    <path d="M640 160 V398"/>
+    <path d="M830 398 V162"/>
+    <path d="M510 505 H558" stroke-dasharray="6 4"/>
+  </g>
+
+  <!-- Labels -->
+  <g font-size="14" font-weight="600" fill="#1f2328">
+    <text x="340" y="175">Yes</text>
+    <text x="340" y="398">No: blank board,</text>
+    <text x="340" y="416">or app will not start</text>
+    <text x="652" y="240">Papilio Loader asks</text>
+    <text x="652" y="260">for the bootloader</text>
+    <text x="652" y="280">(USB or WiFi)</text>
+    <text x="818" y="310" text-anchor="end">Programming done:</text>
+    <text x="818" y="330" text-anchor="end">resume the app</text>
+    <text x="818" y="350" text-anchor="end">(automatic)</text>
+  </g>
+</svg>

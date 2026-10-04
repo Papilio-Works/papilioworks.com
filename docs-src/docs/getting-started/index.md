@@ -78,6 +78,17 @@ The Papilio ESP Bootloader is a small program that is permanently installed on t
 3. **Recover a board that won't start.** If an update goes wrong or the board shows nothing on screen, reconnect USB and reinstall. The bootloader is kept separate from FPGA-Companion, so a bad update can't lock you out.
 4. **Join your WiFi network.** You enter your network name and password once, and the board remembers them.
 
+#### How the bootloader starts and hands over to your app
+
+Every time the board powers on or resets, it looks for a working app. If it finds one, FPGA-Companion starts and the bootloader stays out of the way. The bootloader only runs when:
+
+- **There is no working app.** The board is new, or the app failed to start.
+- **Papilio Loader asks for it.** You can do this over USB or WiFi whenever you want to program the board.
+
+When programming finishes, Papilio Loader tells the bootloader to resume, and FPGA-Companion starts again automatically.
+
+![Flow chart: on power-up or reset, the board runs FPGA-Companion if a working app is installed, and the Papilio ESP Bootloader if not. Papilio Loader can ask for the bootloader over USB or WiFi, and the bootloader resumes the app when programming is done. As a last resort, hold BOOT, press RESET, then use Recover via USB.](../../static/img/hardware/bootloader-flow-diagram.svg)
+
 <details>
 <summary>Technical details: flash layout</summary>
 

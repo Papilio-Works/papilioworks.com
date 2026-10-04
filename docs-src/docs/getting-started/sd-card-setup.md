@@ -7,7 +7,7 @@ sidebar_position: 4
 
 # SD Card Setup
 
-The SD card holds your ROM files and FPGA core bitfiles. Setting it up correctly takes about 5 minutes.
+The SD card holds your ROM files. Setting it up correctly takes about 5 minutes.
 
 ---
 
@@ -51,8 +51,7 @@ Create these folders at the root of the SD card:
 ├── a2600/          ← Atari 2600 ROMs (.bin, .a26)
 ├── c64/            ← Commodore 64 ROMs (.d64, .prg, .crt)
 ├── snes/           ← SNES ROMs (.sfc, .smc)  [for when SNESTang is ready]
-├── nes/            ← NES ROMs (.nes)          [for when NESTang is ready]
-└── cores/          ← FPGA bitfiles (.fs)      [optional — can also be at root]
+└── nes/            ← NES ROMs (.nes)          [for when NESTang is ready]
 ```
 
 :::tip

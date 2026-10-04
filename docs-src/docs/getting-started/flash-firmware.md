@@ -50,7 +50,7 @@ In order of importance, it:
 3. **Shows the on-screen menu (OSD).** Pick ROMs and adjust settings from your TV with your controller.
 4. **Recognizes the running core** and shows the menu and controls that match it.
 
-The Companion does not program the FPGA or switch cores. The core on the FPGA is whichever one you last programmed with Papilio Loader. The Atari 2600 and Commodore 64 cores are working today; the NES and SNES cores are still in progress.
+The Companion does not program the FPGA or switch cores. The core on the FPGA is whichever one you last programmed with Papilio Loader. See [Core Compatibility](../cores/compatibility) for the available cores and their status.
 
 Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com/Papilio-Retrocade/FPGA-Companion)
 
@@ -164,7 +164,7 @@ If you see nothing on screen, check that the HDMI cable is connected to the **Re
 
 Firmware is installed. Now push a game core to the FPGA:
 
-**[Load a Core (OTA JTAG) →](./load-a-core)**
+**[Load a Core →](./load-a-core)**
 
 ---
 

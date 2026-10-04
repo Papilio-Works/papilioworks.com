@@ -1,136 +1,52 @@
 ---
 id: load-a-core
-title: Load a Core (OTA JTAG)
+title: Load a Core
 sidebar_label: Load a Core
 sidebar_position: 3
 ---
 
-# Load a Core via OTA JTAG
+# Load a Core
 
-The Papilio Retrocade loads FPGA bitfiles wirelessly over WiFi — no programmer cables needed after the initial firmware flash. This process is called **OTA JTAG** and is handled by FPGA-Companion.
+A **core** is the FPGA design that recreates a system, such as the Atari 2600 or Commodore 64. You load cores with **Papilio Loader**, over USB or WiFi. FPGA-Companion does not load or switch cores, so there is no core menu in the on-screen display.
 
----
+A core is saved in the FPGA's flash, so it stays loaded when you power the board off. To play a different system, load that system's core the same way.
 
-## How It Works
-
-1. Bitfile (`.fs` file for Gowin) lives on the SD card or is pushed via WiFi
-2. FPGA-Companion reads the bitfile and programs the Tang Primer 20K's FPGA flash over JTAG
-3. On power-up, the FPGA loads from flash automatically
-4. Switching cores = selecting a new `.fs` file from the OSD menu
+See [Core Compatibility](../cores/compatibility) for the cores that are available and how well each one works.
 
 ---
 
-## Prerequisites
+## Easiest: Use the Getting Started Flasher
 
-- FPGA-Companion firmware flashed (see [Flash the Firmware](./flash-firmware))
-- The Retrocade is powered and showing the OSD on HDMI
-- The core bitfile you want to load
-- **Optional:** a custom-built firmware binary with your WiFi credentials, if you want to push cores over WiFi instead of an SD card (see Step 1 below)
+If you followed the [browser-based setup](./flash-firmware#recommended-browser-based-setup), the page already installed the Atari 2600 core for you. You only need this page to load a different core later.
 
 ---
 
-## Step 1: WiFi Is Optional (and Not Yet Configurable from the OSD)
+## Load a Core with Papilio Loader
 
-FPGA-Companion does not currently have an in-menu WiFi setup screen — there's no way to type an SSID/password into the OSD. WiFi credentials are compiled into the firmware binary itself, not entered at runtime.
+1. Download the core's `.bin` bitstream from the [Papilio Retrocade GitHub organization](https://github.com/Papilio-Retrocade). Each core has its own repository with a release.
+2. Open the [Papilio Loader web edition](https://papilioworks.com/loader/) in Chrome or Edge, or use the desktop app.
+3. In the **FPGA** card, choose a transport:
+   - **WiFi** is the fastest, and needs the board to be on your network.
+   - **USB** works any time the board is connected to your computer.
+4. Choose the `.bin` file and click **Flash FPGA**.
+5. Wait for the progress bar to finish. The core starts automatically and the Companion menu appears on your display.
 
-The official pre-built release (`fpga-companion-esp32s3-v1.0.1-merged.bin`) ships with a **placeholder SSID** and will never connect to a real network. This is intentional — the maintainers don't bake real credentials into a public binary.
-
-:::tip[Most users can skip WiFi entirely]
-Loading cores from an SD card (**Step 3, Option A** below) works fully offline and needs no WiFi at all. Only use the steps below if you specifically want OTA core pushing or remote WiFi logging.
+:::warning[Only .bin files work]
+Papilio Loader needs Gowin's headerless **Binary File** (`.bin`) export. Files ending in `.fs` are not supported.
 :::
 
-### Setting WiFi credentials with esptool (no rebuild needed)
-
-FPGA-Companion checks the ESP32's NVS flash partition for a WiFi override at boot, before falling back to the placeholder baked into the release binary. You can write that override yourself with two small, official Espressif command-line tools — no ESP-IDF toolchain and no firmware rebuild:
-
-1. Install the tools (Python, cross-platform):
-   ```bash
-   pip install esptool esp-idf-nvs-partition-gen
-   ```
-2. Create a file named `wifi_nvs.csv`:
-   ```csv
-   key,type,encoding,value
-   wifi_cfg,namespace,,
-   ssid,data,string,YourNetworkName
-   pass,data,string,YourNetworkPassword
-   ```
-3. Generate the NVS binary (the device's NVS partition is 20 KB — `0x5000` bytes):
-   ```bash
-   python -m esp_idf_nvs_partition_gen generate wifi_nvs.csv wifi_nvs.bin 0x5000
-   ```
-4. Put the ESP32-S3 in bootloader mode (hold **BOOT**, plug in USB-C, release after 2 seconds) and flash it to the NVS partition at offset `0x9000`:
-   ```bash
-   python -m esptool --chip esp32s3 -b 460800 write-flash 0x9000 wifi_nvs.bin
-   ```
-5. Power-cycle the device — it connects using your credentials
-
-:::tip
-This NVS partition is separate from the application firmware, so future OTA or USB firmware updates won't erase your WiFi credentials.
-:::
-
-:::note[Advanced: building from source]
-You can still bake credentials into a custom build via `sdkconfig.defaults.local` if you prefer — see `src/esp32/README.md` in the [FPGA-Companion repo](https://github.com/Papilio-Retrocade/FPGA-Companion). For most users the esptool/NVS method above is simpler and doesn't require installing ESP-IDF.
-:::
+For more detail on each option, see [Flashing Devices](../papilio-loader/flashing-devices).
 
 ---
 
-## Step 2: Download Core Bitfiles
+## Verify the Core Loaded
 
-:::note[Content Coming Soon]
-Direct download links for each core will be added here once the first release is published.
-:::
+After the core starts:
 
-Available cores:
+- The HDMI output shows the core's startup screen or ROM browser.
+- The on-screen menu matches the core you loaded.
 
-| Core | System | Status | Filename |
-|---|---|---|---|
-| A2600Nano | Atari 2600 | ✓ Working | `a2600.fs` |
-| C64Nano | Commodore 64 | ✓ Working | `c64.fs` |
-| SNESTang | SNES | In Progress | `snes.fs` |
-| NESTang | NES | In Progress | `nes.fs` |
-
-Download from: [https://github.com/Papilio-Retrocade](https://github.com/Papilio-Retrocade)
-
----
-
-## Step 3: Load via OSD Menu
-
-:::note[Content Coming Soon]
-OSD menu navigation screenshots will be added here.
-:::
-
-**Option A — From SD Card**
-1. Copy the `.fs` file to the root of your SD card
-2. In the OSD menu, navigate to **Core → Load from SD**
-3. Select your `.fs` file
-4. FPGA-Companion programs the FPGA flash (~15 seconds)
-5. The system reboots into the new core automatically
-
-**Option B — Via WiFi (OTA Push)**
-1. In the OSD menu, find the device's IP address under **Settings → Network**
-2. Open a browser on your computer and navigate to `http://<device-ip>/`
-3. Upload the `.fs` file via the web interface
-4. FPGA-Companion programs the FPGA flash and reboots
-
----
-
-## Step 4: Verify the Core Loaded
-
-After the FPGA reboots:
-- The HDMI output should change to match the selected core
-- The RGB LED color will change to indicate which core is active
-- You should see the core's startup screen or ROM browser
-
----
-
-## Switching Between Cores
-
-You can store multiple `.fs` files on the SD card and switch between them without reflashing:
-
-1. Press the OSD button to open the menu
-2. Navigate to **Core → Switch Core**
-3. Select the core you want to load
-4. FPGA reprograms in ~15 seconds
+If nothing appears, see [Common Issues](../troubleshooting/common-issues).
 
 ---
 
@@ -144,6 +60,6 @@ Core is loaded. Now set up your SD card with ROMs:
 
 ## 🎓 Want to Go Deeper?
 
-The OTA JTAG system — how the ESP32-S3 talks to the FPGA over SPI/JTAG, how bitfiles are structured, how core switching works — is exactly the kind of thing covered in the FPGA Fundamentals course.
+How the ESP32-S3 programs the FPGA, how bitstreams are structured, and how cores talk to FPGA-Companion over SPI is exactly the kind of thing covered in the FPGA Fundamentals course.
 
 **[FPGA Fundamentals: AI as Your Co-Developer →](https://learn.papilioworks.com)**

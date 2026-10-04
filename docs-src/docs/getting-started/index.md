@@ -73,7 +73,7 @@ The wireless brain. Handles:
 ## Setup Overview
 
 1. **[Flash the firmware](./flash-firmware)** — install FPGA-Companion on the ESP32-S3 *(one time only)*
-2. **[Load a core](./load-a-core)** — push the A2600 or C64 bitfile to FPGA flash via OTA JTAG
+2. **[Load a core](./load-a-core)** — program the A2600 or C64 bitstream onto the FPGA with Papilio Loader
 3. **[Set up your SD card](./sd-card-setup)** — format FAT32, create folders, copy ROMs
 4. **[Pair your controller](./pair-your-controller)** — connect your Xbox/PS4/PS5 gamepad over BLE
 5. Connect HDMI and USB-C power, navigate the OSD menu, and play

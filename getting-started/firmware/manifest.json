@@ -5,7 +5,7 @@
   "publishedAt": "2026-10-02T05:29:59Z",
   "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
   "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0",
-  "fetchedAt": "2026-10-04T19:06:57.013Z",
+  "fetchedAt": "2026-10-04T20:10:06.576Z",
   "components": {
     "bootloader": {
       "name": "Papilio ESP Bootloader",

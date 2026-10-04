@@ -38,11 +38,14 @@ The current 4 MB flash layout is:
 
 ## What is FPGA-Companion?
 
-FPGA-Companion is the open-source firmware that runs on the ESP32-S3. It provides:
+FPGA-Companion is the open-source runtime firmware that runs on the ESP32-S3 after the Papilio ESP Bootloader starts it. The Companion manages the day-to-day game-console experience: it communicates with the FPGA, controls which game core is active, and connects that core to the board's storage and controllers.
+
+It provides:
 - The on-screen display (OSD) menu
-- Bluetooth gamepad pairing
+- Game-core selection and loading, including programming cores into the FPGA's persistent SPI flash or temporary JTAG SRAM
+- ROM and disk-image management from the SD card, including loading a selected image into the active core
+- Game-controller input handling, including Bluetooth gamepad pairing and forwarding player controls to the active core
 - WiFi OTA updates for FPGA bitfiles
-- SD card ROM management
 - JTAG communication with the FPGA
 
 Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com/Papilio-Retrocade/FPGA-Companion)

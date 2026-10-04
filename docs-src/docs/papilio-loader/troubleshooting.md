@@ -11,68 +11,64 @@ Quick fixes for the most common Papilio Loader issues.
 
 ---
 
-## Installation & Startup
+## Connecting
 
 | Problem | Fix |
 |---|---|
-| `pip install` fails | Confirm Python 3.12+ with `python --version`; try `python -m pip install papilio-loader-mcp` |
-| `python -m papilio_loader_mcp.api` not found | The package installed into a different Python — use the same interpreter you installed with |
-| Port 8000 already in use | Start on another port: set `PAPILIO_PORT=8001` before launching |
-| Browser can't reach `localhost:8000` | Check the terminal for startup errors; make sure the server process is still running |
+| The page says Web Serial isn't available | Use Chrome or Edge on a desktop computer. Other browsers can't talk to USB serial ports. |
+| No serial ports listed | Try a different USB cable. It must be a data cable, not charge-only. |
+| Connect fails because the port is busy | Close anything else using the port, such as a serial monitor, an IDE, or another Loader tab. |
+| The port disappears after the board starts | The board is in USB Host mode, which turns off the USB serial port. Press the **BOOT** button on the ESP32-S3 to switch back. |
+| The board is not on the list of ports | Show every port under **Advanced options** with **Show all USB serial ports**. |
 
 ---
 
-## USB/Serial Flashing
+## Programming
 
 | Problem | Fix |
 |---|---|
-| No serial ports listed | Click **🔄 Refresh** under Advanced Options; try a different USB cable (must be data-capable, not charge-only) |
-| Port appears but flash fails | Close anything else using the port (serial monitors, IDEs), then retry |
-| ESP32 not detected at all | Install the USB driver for your board (CP210x or CH340), then hold **BOOT** while plugging in to enter bootloader mode |
-| Permission errors (Linux/Mac) | Add yourself to the `dialout` group (Linux) or grant terminal USB access (Mac) |
-| Flash succeeds but device doesn't boot | Check the flash address — ESP32 apps go to `0x10000`, FPGA bitstreams to `0x100000` |
+| "Not a Gowin FPGA bitstream" or "not ESP32 firmware" | You picked the file for the wrong card. FPGA files are Gowin `.bin` exports. ESP32 files are firmware `.bin` files. |
+| `.fs` file rejected | Only Gowin's headerless **Binary File** (`.bin`) export works. Export it again from the Gowin tools. |
+| WiFi programming fails partway | Move the board closer to your router, or switch **FPGA transport** to **USB / Serial only** in **Advanced options**. |
+| Loader can't find the board's IP | In **Board Status**, click **Find My IP**, or use **Scan LAN for Devices** in the Desktop App. The board and computer must be on the same network. |
+| The first WiFi request after a pause fails | Try again. A board that has been idle can drop the first request. |
+| Nothing on screen after programming | Wait a few seconds for the board to restart. If it doesn't, click **Resume User App** under **Advanced options**. |
 
 ---
 
-## OTA (WiFi) Flashing
+## A Board That Won't Start
 
-| Problem | Fix |
-|---|---|
-| **🔍 Discover Devices** finds nothing | Device and PC must be on the same subnet; give the device a minute after boot to connect to WiFi |
-| Known IP doesn't respond | Ping it first; confirm FPGA-Companion is running and port 3232 isn't blocked by a firewall |
-| OTA flash starts but fails midway | Weak WiFi signal is the usual culprit — move the device closer to the router or fall back to USB |
-| Device never appears after first setup | OTA requires FPGA-Companion to already be installed — the very first flash must be over USB |
+Try these in order:
 
----
+1. **Resume User App** or **Start ESP Bootloader** under **Advanced options**, to see whether the board answers.
+2. **Recover via USB** in the connection panel. This forces the board into the bootloader without any button presses, and Loader tells you whether it recovered.
+3. Hold **BOOT**, press **RESET**, and run the recovery again. Use this when USB Host mode has turned off the USB serial port.
+4. Reinstall the board with the [Getting Started flasher](https://papilioworks.com/getting-started/).
 
-## Web Interface
-
-| Problem | Fix |
-|---|---|
-| Login fails | Check `PAPILIO_WEB_USERNAME` / `PAPILIO_WEB_PASSWORD`; enable cookies; clear the browser cache |
-| Upload rejected | FPGA accepts `.bin` only; ESP32 accepts `.bin` or `.elf`; files must be under the 50 MB limit |
-| Another computer can't reach the loader | Confirm `PAPILIO_BIND_ADDRESS=0.0.0.0` (the default) and that your PC's firewall allows the port |
-| Saved Files Library is empty after reinstall | The library lives on the server — restore it with **⬆️ Import ZIP** from a previous export |
+:::tip
+Software resets don't restart the FPGA chip. If the picture is frozen or garbled after several resets, unplug the board and plug it back in.
+:::
 
 ---
 
-## WiFi Log Monitor
+## Web Edition Limits
 
-| Problem | Fix |
+| Missing in the Web Edition | Use instead |
 |---|---|
-| No log lines appear | Allow inbound UDP port 7777 through your firewall; confirm the device is on the same subnet |
-| Log stops updating | Click **⏹ Stop** then **▶ Start Monitoring** again |
+| Scan LAN for Devices | **Find My IP** or type the IP address |
+| WiFi Log Monitor | The **Status Log** over USB, or the Desktop App |
+| Saved Files Library | The Desktop App |
 
 ---
 
 ## Still Stuck?
 
-Enable **Show command and detailed output** under Advanced Options and retry — the Status Log will then include the exact esptool/pesptool command and its full output, which usually pinpoints the problem. Paste that output into an AI assistant (or the community forum) for a fast diagnosis.
+Open the **Status Log** and click **Open Log** to watch the board's boot messages, then paste the output into an AI assistant or the community forum for a quick diagnosis.
 
 ---
 
 ## 🎓 Want to Go Deeper?
 
-Debugging hardware is a learnable skill. The FPGA Debugging with AI course teaches a systematic approach — from reading tool output to isolating faults — with AI as your debugging partner.
+Debugging hardware is a learnable skill. The FPGA Debugging with AI course teaches a systematic approach, from reading tool output to isolating faults, with AI as your debugging partner.
 
 **[Explore the Courses →](https://learn.papilioworks.com)**

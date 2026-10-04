@@ -67,7 +67,7 @@ Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com
 
 ## Recommended: Browser-Based Setup
 
-The [browser-based Getting Started flasher](https://papilioworks.com/getting-started/) is the easiest way to prepare a blank board. It downloads the current recovery image, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
+The [browser-based Getting Started flasher](https://papilioworks.com/getting-started/) is the easiest way to prepare a blank board. It downloads the current Papilio ESP32 Bootloader, FPGA Companion ESP32 app, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
 
 1. Hold **BOOT** while powering the ESP32-S3 over USB.
 2. Open the Getting Started flasher in Chrome or Edge.
@@ -82,38 +82,22 @@ The ROM upload requires the board to be reachable over WiFi because the Companio
 The recovery image writes the factory bootloader and a compatible Companion application in one USB operation. Use it for a new board or to migrate a board that still uses the older application-centered layout.
 
 :::warning[Use the recovery image only for migration]
-Do not flash a normal FPGA-Companion application image over the factory partition. After migration, update the application through the Papilio ESP Bootloader using OTA or the Papilio Loader recovery workflow.
+Do not flash a normal FPGA-Companion application image over the factory partition. After migration, update the application with Papilio Loader, which installs app-only updates safely beside your current version.
 :::
 
 ---
 
 ## Manual Setup with Papilio Loader
 
-Papilio Loader is the official tool for programming Papilio hardware. It can flash **ESP32 firmware** and **FPGA bitstreams** over **USB** or **WiFi**:
+Papilio Loader is the official tool for programming Papilio hardware. It can program the **ESP32 firmware** and **FPGA bitstreams** over **USB** or **WiFi**:
 
-- **USB:** recover or program the ESP32, and flash an FPGA bitstream when WiFi is unavailable.
-- **WiFi:** update the ESP32 application and program or recover the FPGA remotely after the board has joined your network.
+- **USB:** recover or program the ESP32, and program the FPGA when WiFi is unavailable.
+- **WiFi:** update the ESP32 application and program the FPGA remotely after the board has joined your network.
 
-**Windows users:** the easiest route is the one-click installer — no Python needed. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases), install it, launch **Papilio Loader** from the Start Menu, then right-click the system tray icon and choose **Open Web Interface**.
-
-**Mac, Linux, or pip users:** install the Python package instead (requires Python 3.12+):
-
-```bash
-pip install papilio-loader-mcp
-```
-
-Then start the Papilio Loader server:
-
-```bash
-python -m papilio_loader_mcp.api
-```
-
-Either way, open your browser to **[http://localhost:8000/web/upload](http://localhost:8000/web/upload)**. You should see the Device Flash Manager:
-
-![Papilio Loader Device Flash Manager](../../static/img/papilio-loader/upload.png)
+Use the **[Web Edition](https://papilioworks.com/loader/)** in Chrome or Edge with nothing to install, or install the Windows **Desktop App**: download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases) and launch **Papilio Loader** from the Start Menu.
 
 :::tip
-Papilio Loader can do a lot more than first-time flashing — OTA updates over WiFi, a saved firmware library, live WiFi logs, and an API. See the full [Papilio Loader documentation](../papilio-loader/index.md).
+Papilio Loader can do more than first-time setup, including finding boards on your network, a saved files library, live WiFi logs, and AI assistant support. See the full [Papilio Loader documentation](../papilio-loader/index.md).
 :::
 
 ---
@@ -123,10 +107,10 @@ Papilio Loader can do a lot more than first-time flashing — OTA updates over W
 1. Hold the **BOOT button** on the ESP32-S3 SuperMini
 2. Plug in the USB-C cable while holding BOOT
 3. Release BOOT after 2 seconds — the device is now in ROM download mode
-4. Use the Papilio ESP Bootloader recovery image from the browser-based Getting Started flow, or the matching migration image from the [FPGA-Companion v2.0.0 release](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0)
-5. In Papilio Loader, select **USB/Serial**, choose the recovery `.bin`, and set **Flash Address (hex)** to `0x0`
-6. Click **Flash ESP32** and wait for the flash to complete
-7. Reconnect to USB, provision WiFi, and use the bootloader-managed OTA flow for future application updates
+4. Use the migration image from the browser-based Getting Started flow, or from the [FPGA-Companion v2.0.0 release](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0) (`papilio-migration-v2.0.0-merged.bin`)
+5. In Papilio Loader, click **Connect USB** and choose the board's port, then choose the migration `.bin` on the **ESP32 Flash** card. Loader recognizes the merged image and writes it from the start of flash.
+6. Click **Program ESP32** and wait for it to finish
+7. Reconnect to USB, enter your WiFi credentials, and use Papilio Loader for future updates
 
 ---
 
@@ -155,8 +139,8 @@ If you see nothing on screen, check that the HDMI cable is connected to the **Re
 | Device not detected by computer | Try a different USB-C cable — many are charge-only with no data lines |
 | Flash fails with "port not found" | Check Device Manager (Windows) or `ls /dev/tty*` (Linux/Mac) for the correct port |
 | Nothing on HDMI after flash | Confirm ESP32-S3 is in the correct header orientation |
-| Green LED doesn't blink | Re-flash the recovery image at `0x0`. Confirm you used the Retrocade-specific migration image, not an app-only FPGA-Companion build |
-| WiFi provisioning says the serial port cannot be opened | Wait for the board to finish rebooting and USB re-enumeration, then retry **Send to Board** |
+| Green LED doesn't blink | Re-flash the migration image from the start of flash. Confirm you used the Retrocade-specific migration image, not an app-only FPGA-Companion build |
+| WiFi setup says the serial port cannot be opened | Wait for the board to finish rebooting and USB re-enumeration, then retry **Send to Board** |
 
 ---
 

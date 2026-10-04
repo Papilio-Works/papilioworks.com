@@ -7,118 +7,53 @@ sidebar_position: 1
 
 # Papilio Loader
 
-Papilio Loader is the official tool for flashing Papilio hardware. It programs both chips on your Retrocade setup:
+Papilio Loader is the official tool for programming Papilio hardware. It programs both chips on your Retrocade:
 
-- **FPGA (Gowin)** — writes bitstreams to the Tang Primer 20K's external flash
-- **ESP32-S3** — writes FPGA-Companion firmware to the ESP32-S3 SuperMini
+- **FPGA (Gowin):** writes a game core or your own design to the FPGA's flash, so it stays loaded after power-off.
+- **ESP32-S3:** installs and updates the FPGA-Companion firmware.
 
-It runs as a small local server on your computer and gives you three ways to work:
-
-| Interface | Best For | Where |
-|---|---|---|
-| **Web Interface** | Manual flashing, everyday use | `http://localhost:8000/web/upload` |
-| **REST API** | Automation, scripts, CI/CD | `http://localhost:8000/docs` |
-| **MCP Server** | AI-assisted workflows (Claude, Copilot) | `http://localhost:8000/sse` |
-
-All three run simultaneously from a single server process.
+Both work over **USB** or **WiFi**. Loader talks to the [Papilio ESP Bootloader](../getting-started/flash-firmware#what-is-the-papilio-esp-bootloader) on your board, which is what makes programming and recovery reliable.
 
 ---
 
-## Key Features
+## Two Ways to Run It
 
-- **USB/Serial flashing** — program devices over a USB-C cable with automatic port detection
-- **OTA (WiFi) flashing** — update devices over your network with no cable at all, including automatic device discovery
-- **Saved Files Library** — keep frequently-used firmware on hand with names and descriptions, and export/import the whole library as a ZIP
-- **WiFi Log Monitor** — watch live debug output from FPGA-Companion over the network
-- **Safe dual-tool design** — the official Espressif `esptool` handles ESP32 flashing; the GadgetFactory `pesptool` fork handles FPGA bitstreams
-
----
-
-## Installation
-
-There are two ways to install Papilio Loader:
-
-| Method | Platforms | Best For |
+| Version | Best For | What You Need |
 |---|---|---|
-| **Windows Installer** | Windows 10/11 (64-bit) | One-click setup, no Python required |
-| **Python Package** | Windows, Mac, Linux | Cross-platform, scripting, always up to date via pip |
+| **Web Edition** | Quick programming with nothing to install | Chrome or Edge on a desktop computer |
+| **Desktop App** | Everyday use, finding boards on your network, WiFi logs, and AI assistants | Windows 10/11 (64-bit) |
 
-### Option A: Windows Installer (Recommended for Windows)
+### Web Edition
 
-No Python required — everything is bundled into a standard desktop app:
-
-1. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases)
-2. Run the installer. During setup you can optionally enable:
-   - **Create a desktop icon**
-   - **Run at Windows startup** — the loader is always ready in your system tray
-   - **Add pesptool.exe and esptool.exe to system PATH** — use the flashing tools directly from any command prompt
-3. Launch **Papilio Loader** from the Start Menu
-4. A system tray icon appears — right-click it and choose **Open Web Interface**
-
-The installer also adds Start Menu shortcuts for:
-
-- **Papilio Loader (Debug Console)** — runs the app with a visible console window so you can see server output, handy for troubleshooting
-- **pesptool / esptool Command Prompt** — opens a command prompt with the standalone flashing tools ready to use
+Open **[papilioworks.com/loader](https://papilioworks.com/loader/)** in Chrome or Edge. It connects to your board over USB using Web Serial, and sends files over WiFi directly from your browser. Nothing is installed, and your files never leave your computer.
 
 :::note
-The desktop app runs the exact same server and web UI described throughout these docs — only the way you start it differs.
+Web browsers can't scan your network or receive UDP logs, so the Web Edition asks you to click **Find My IP** instead of scanning, and has no WiFi Log Monitor. The Desktop App adds both.
 :::
 
-### Option B: Python Package (Windows, Mac, Linux)
+### Desktop App
 
-Install with pip — identical on every platform:
+1. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases).
+2. Run the installer and launch **Papilio Loader** from the Start Menu.
 
-```bash
-pip install papilio-loader-mcp
-```
+The Desktop App uses the same interface as the Web Edition and adds:
 
-:::tip
-Don't have Python? Download it from [python.org](https://www.python.org/downloads/) — Python 3.12 or newer is required.
-:::
+- **Scan LAN for Devices** to find boards on your network automatically
+- **WiFi Log Monitor** for live debug output from your board
+- **Saved Files Library** for frequently used cores and firmware
+- **AI assistant support** through a built-in MCP server (see [API & Automation](./api-and-automation))
 
 ---
 
-## Starting the Server
+## First-Time Setup of a New Board
 
-**Desktop app:** launch Papilio Loader from the Start Menu (or let it start with Windows), then right-click the tray icon and choose **Open Web Interface**.
-
-**Python package:** run the server from a terminal:
-
-```bash
-python -m papilio_loader_mcp.api
-```
-
-Either way, the web interface lives at **[http://localhost:8000/web/upload](http://localhost:8000/web/upload)**. You should see the Device Flash Manager:
-
-![Papilio Loader Device Flash Manager](../../static/img/papilio-loader/upload.png)
-
----
-
-## Login (Optional)
-
-By default the web interface is open for local use — no login required. If you plan to expose the loader on your network, enable authentication first:
-
-```bash
-# Windows (PowerShell)
-$env:PAPILIO_REQUIRE_WEB_AUTH = "true"
-$env:PAPILIO_WEB_USERNAME = "your_username"
-$env:PAPILIO_WEB_PASSWORD = "a_strong_password"
-
-# Mac/Linux
-export PAPILIO_REQUIRE_WEB_AUTH=true
-export PAPILIO_WEB_USERNAME=your_username
-export PAPILIO_WEB_PASSWORD=a_strong_password
-```
-
-With authentication enabled, you'll see a login screen before the flash manager:
-
-![Papilio Loader login page](../../static/img/papilio-loader/login.png)
+If your board is brand new, or you're recovering one, use the guided **[Getting Started flasher](https://papilioworks.com/getting-started/)**. It installs the bootloader, connects your WiFi, and loads the Atari 2600 core. See [Flash the Firmware](../getting-started/flash-firmware) for the steps.
 
 ---
 
 ## Next Step
 
-Ready to flash your first device:
+Learn how to program your FPGA and ESP32:
 
 **[Flashing Devices →](./flashing-devices)**
 
@@ -126,6 +61,6 @@ Ready to flash your first device:
 
 ## 🎓 Want to Go Deeper?
 
-Curious what actually happens when a bitstream is written to flash, or how the ESP32 loads the FPGA at boot? The FPGA Fundamentals course walks through the whole boot chain — with AI as your co-developer.
+Understanding what happens when you program an FPGA, from bitstream to flash to configuration, makes everything easier to debug. The FPGA Fundamentals course covers it with AI as your guide.
 
 **[FPGA Fundamentals: AI as Your Co-Developer →](https://learn.papilioworks.com)**

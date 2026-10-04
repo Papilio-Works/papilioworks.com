@@ -7,94 +7,88 @@ sidebar_position: 2
 
 # Flashing Devices
 
-The Device Flash Manager has two cards — one for the **FPGA** and one for the **ESP32**. Both work the same way: pick a flash method, select a file, and click Flash.
-
-![Papilio Loader Device Flash Manager](../../static/img/papilio-loader/upload.png)
+The Loader has two cards: one for the **FPGA** and one for the **ESP32**. Pick a file, press the program button, and Loader handles the rest. It connects over USB, starts the bootloader on your board, and chooses the best way to send the file.
 
 ---
 
-## Choosing a Flash Method
+## Connect Your Board
 
-Each card starts with a **Flash Method** selector:
+1. Plug the ESP32-S3 into your computer with a USB data cable.
+2. Click **Connect USB** and choose the board's serial port.
+3. To program over WiFi, the board needs to be on your network and Loader needs its IP address:
+   - **Desktop App:** click **Scan LAN for Devices**.
+   - **Web Edition:** open **Board Status** and click **Find My IP**, or type the IP address and click **Use This IP**.
 
-- **📡 OTA (WiFi)** — flash a device over your network. No cable needed; the device must be running FPGA-Companion and connected to the same network.
-- **🔌 USB/Serial** — flash a device connected by USB-C cable. Required for first-time setup (before FPGA-Companion is installed).
-
----
-
-## Flashing the FPGA (Gowin Bitstreams)
-
-The FPGA card accepts `.bin` bitstream files (for example, a compiled A2600Nano or C64Nano core) and writes them to the Tang Primer 20K's external flash using pesptool.
-
-![FPGA Flash card in OTA mode](../../static/img/papilio-loader/fpga-card-ota.png)
-
-**OTA (WiFi) mode:**
-
-1. Enter the device's IP address — or click **🔍 Discover Devices** to scan your network automatically
-2. Click **📁 Click to select .bin file** and choose your bitstream
-3. Click **⚡ Flash FPGA**
-4. Watch progress in the Status Log — the device reboots into the new core when done
-
-**USB/Serial mode:**
-
-Select **🔌 USB/Serial** instead. Port selection lives under **⚙️ Advanced Options**, and defaults to auto-detect:
-
-![FPGA Flash card in USB mode with Advanced Options open](../../static/img/papilio-loader/fpga-card-usb-advanced.png)
-
-| Advanced option | Default | Notes |
-|---|---|---|
-| COM Port | 🔍 Auto-detect | Click **🔄 Refresh** after plugging in a device |
-| Verify after flashing | On | Reads back and confirms the write |
-| Flash Address | `0x100000` | Bitstream offset in external flash — leave as-is for Retrocade |
-| Show command and detailed output | Off | Logs the full pesptool command line and output |
+If the board is not on WiFi yet, enter your network name and password and click **Send WiFi Credentials**. You only need to do this once.
 
 ---
 
-## Flashing the ESP32 (FPGA-Companion Firmware)
+## Programming the FPGA
 
-The ESP32 card accepts `.bin` or `.elf` firmware files and flashes them with the official Espressif esptool.
+Use this to load a game core or your own design.
 
-![ESP32 Flash card in OTA mode](../../static/img/papilio-loader/esp32-card-ota.png)
+1. Click the file picker on the **FPGA Flash** card and choose a Gowin `.bin` bitstream.
+2. Click **Program FPGA**.
+3. Watch the progress bar. When it finishes, the board returns to your application automatically and the new core starts.
 
-The workflow is identical to the FPGA card. The Advanced Options differ only in flash address:
+The core is written to the FPGA's flash, so it is still there after you power the board off.
 
-| Advanced option | Default | Notes |
-|---|---|---|
-| Flash Address | `0x10000` | Standard app partition. Use `0x1000` only when flashing a bootloader image |
-
-:::warning
-For a brand-new ESP32-S3 that has never run FPGA-Companion, OTA is not available yet — use **USB/Serial** with the device in bootloader mode (hold BOOT while plugging in USB). See [Flash the Firmware](../getting-started/flash-firmware) for the full first-time procedure.
+:::warning[Only .bin files work]
+Loader needs Gowin's headerless **Binary File** (`.bin`) export. It checks the file before sending and rejects `.fs` files, ESP32 firmware, and anything else that isn't a Gowin bitstream.
 :::
 
 ---
 
-## OTA Device Discovery
+## Programming the ESP32
 
-Clicking **🔍 Discover Devices** scans your local subnet for devices answering on the OTA port (3232) and lists them for one-click selection. Discovery works for both cards.
+Use this to install or update FPGA-Companion.
 
-Under the hood, FPGA-Companion exposes two HTTP endpoints on port 3232:
+1. Click the file picker on the **ESP32 Flash** card and choose a firmware `.bin`.
+2. Click **Program ESP32**.
 
-- `POST http://DEVICE_IP:3232/update` — ESP32 firmware update
-- `POST http://DEVICE_IP:3232/fpga-update` — FPGA bitstream update
+Loader detects which kind of file you chose:
 
-If discovery finds nothing but you know the device's IP, just type it into the **Device IP Address** field directly.
+| File | What Loader does |
+|---|---|
+| **Merged image** (for a new or recovered board) | Writes the whole flash over USB, including the bootloader. Use this for first-time setup and recovery. |
+| **App-only image** (an FPGA-Companion update) | Starts the bootloader and installs the update beside your current version. The board restarts into the new version when it is done. |
+
+An app-only update never touches the bootloader, so it can't lock you out of your board.
+
+---
+
+## USB or WiFi?
+
+By default, Loader uses WiFi when it knows your board's IP address and falls back to USB when it doesn't. To choose yourself, open **Advanced options** and set **FPGA transport**:
+
+- **Auto** uses WiFi when available.
+- **OTA / WiFi only** never uses USB.
+- **USB / Serial only** never uses WiFi.
+
+WiFi is faster and needs no cable to your computer. USB works any time the board is plugged in.
+
+---
+
+## Board Status and Recovery
+
+The **Board Status** panel shows whether the board is running the **bootloader** or your **application** (FPGA-Companion), plus its IP address. Under **Advanced options**:
+
+- **Start ESP Bootloader** restarts the board into the bootloader.
+- **Resume User App** returns to your application. Loader does this for you after programming.
+
+If a board won't start, click **Recover via USB** in the connection panel. See [Troubleshooting](./troubleshooting).
 
 ---
 
 ## The Status Log
 
-Every action — port refreshes, uploads, flash progress, errors — is logged with timestamps and color coding at the bottom of the page:
-
-![Status Log](../../static/img/papilio-loader/status-log.png)
-
-- **Keep history** — retain messages between operations instead of clearing on each flash
-- **🗑️ Clear Log** — wipe the log display
+Every action is logged with timestamps. Use **Open Log** to watch the board's live boot messages over USB, which is useful when something goes wrong.
 
 ---
 
 ## Next Step
 
-Save your frequently-used firmware so you never have to hunt for files again:
+Keep your favorite cores and firmware handy:
 
 **[Saved Files Library →](./saved-files-library)**
 
@@ -102,6 +96,6 @@ Save your frequently-used firmware so you never have to hunt for files again:
 
 ## 🎓 Want to Go Deeper?
 
-Ever wondered why the FPGA bitstream lives at `0x100000` while ESP32 firmware goes to `0x10000`? The FPGA Fundamentals course covers flash memory maps, the SPI link between the ESP32 and FPGA, and how to debug flashing issues with AI.
+Ever wondered how a bitstream gets from your computer into the FPGA's flash? The FPGA Fundamentals course covers flash memory, the link between the ESP32 and FPGA, and how to debug programming problems with AI.
 
 **[FPGA Fundamentals: AI as Your Co-Developer →](https://learn.papilioworks.com)**

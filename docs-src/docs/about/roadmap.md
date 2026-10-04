@@ -21,15 +21,17 @@ What's working, what's coming, and what's planned for the Papilio Retrocade ecos
 
 ---
 
-## Firmware (FPGA-Companion)
+## Firmware and Tools
 
 | Feature | Status |
 |---|---|
-| OSD menu | ✓ Working |
+| Program the FPGA and ESP32 over USB and WiFi (Papilio Loader) | ✓ Working |
+| Recover a board that won't start (Papilio ESP Bootloader) | ✓ Working |
+| Browser-based setup for a new board | ✓ Working |
+| OSD menu (FPGA-Companion) | ✓ Working |
 | BLE gamepad (Xbox/PS4/PS5) | ✓ Working |
-| WiFi OTA core loading | ✓ Working |
 | SD card ROM browser | ✓ Working |
-| Web flasher (browser-based firmware flash) | Planned |
+| Send a ROM to the board over WiFi | ✓ Working |
 | Multiple simultaneous BLE controllers | Planned |
 
 ---
@@ -43,7 +45,7 @@ What's working, what's coming, and what's planned for the Papilio Retrocade ecos
 | SNES (SNESTang) | 🔧 In Progress |
 | NES (NESTang) | 🔧 In Progress |
 | Game Boy / GBA | 🔍 Investigating |
-| Atari ST / Amiga | 🔍 Investigating (depends on harbaum) |
+| Atari ST / Amiga | 🔍 Investigating (Atari ST port paused; depends on harbaum) |
 
 ---
 

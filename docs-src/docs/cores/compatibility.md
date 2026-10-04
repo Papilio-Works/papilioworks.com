@@ -12,11 +12,11 @@ Overview of all cores — current status, what works, and what's coming.
 | Core | System | Year | Status | Notes |
 |---|---|---|---|---|
 | A2600Nano | Atari 2600 | 1977 | ✓ Working | Most cartridges. Bankswitching WIP |
-| C64Nano | Commodore 64 | 1982 | ✓ Working | D64, PRG, CRT, TAP supported |
+| C64Nano | Commodore 64 | 1982 | ✓ Working | Cartridge (`.crt`) images load reliably. Disk (`.d64`) games are not reliable yet |
 | SNESTang | Super Nintendo | 1990 | 🔧 In Progress | Mode 7 ✓, SuperFX pending |
-| NESTang | NES | 1983 | 🔧 In Progress | Core mapper support WIP |
+| NESTang | NES | 1983 | 🔧 In Progress | Some games load and play. Many don't yet, and loading from the menu is slow |
 | GBATang | Game Boy / GBA | 1989/2001 | 🔍 Investigating | Feasibility under review |
-| MiSTeryNano | Atari ST | 1985 | 🔍 Investigating | Depends on harbaum collaboration |
+| MiSTeryNano | Atari ST | 1985 | 🔍 Investigating | Port paused. Depends on harbaum collaboration |
 | NanoMig | Amiga | 1985 | 🔍 Investigating | Depends on harbaum collaboration |
 
 ---

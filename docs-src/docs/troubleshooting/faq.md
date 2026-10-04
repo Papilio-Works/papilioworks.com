@@ -27,6 +27,12 @@ This FAQ will be populated from real support questions as they come in. Check ba
 **FPGA-Companion OSD appears but no core loaded**
 - Load a core bitfile — see [Load a Core](../getting-started/load-a-core)
 
+**How do I switch to a different system?**
+- Program that system's core with Papilio Loader — see [Load a Core](../getting-started/load-a-core). The on-screen menu does not switch cores
+
+**The board won't start or won't respond**
+- See [A Board That Won't Start](../papilio-loader/troubleshooting#a-board-that-wont-start)
+
 ---
 
 ## ROM / SD Card Issues

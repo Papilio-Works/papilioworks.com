@@ -42,6 +42,7 @@ The wireless brain. It:
 - Runs the **Papilio ESP Bootloader** and the **FPGA-Companion** app
 - Connects to **WiFi**
 - Pairs **Bluetooth BLE 5.0** gamepads (Xbox Series, PS4, PS5)
+- Reads **USB** keyboards, mice, and gamepads
 - Reads the **SD card**
 - Programs the FPGA
 
@@ -106,7 +107,7 @@ FPGA-Companion is the open-source app that runs on the ESP32-S3 whenever you're 
 In order of importance, it:
 
 1. **Loads and manages ROMs.** Browse games on the SD card from the on-screen menu and load them into the running core. You can also send a ROM to the board over WiFi.
-2. **Provides game controller input.** Pair a Bluetooth gamepad, and the Companion passes its buttons to the core.
+2. **Provides game controller input.** Pair a Bluetooth gamepad, or plug in a USB keyboard, mouse, or gamepad, and the Companion passes it to the core.
 3. **Shows the on-screen menu (OSD).** Pick ROMs and adjust settings from your TV with your controller.
 4. **Recognizes the running core** and shows the menu and controls that match it.
 

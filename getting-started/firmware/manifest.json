@@ -4,7 +4,7 @@
   "size": 2541744,
   "publishedAt": "2026-10-02T05:29:59Z",
   "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
-  "fetchedAt": "2026-10-04T04:57:56.478Z",
+  "fetchedAt": "2026-10-04T06:02:48.636Z",
   "artifacts": {
     "bootloader": {
       "fileName": "papilio-migration-v2.0.0-merged.bin",

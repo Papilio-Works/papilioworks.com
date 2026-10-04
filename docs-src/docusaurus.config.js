@@ -75,7 +75,7 @@ const config = {
           {
             title: 'Getting Started',
             items: [
-              { label: "What's in the Box", to: '/getting-started' },
+              { label: "Retrocade Overview", to: '/getting-started' },
               { label: 'Flash Firmware', to: '/getting-started/flash-firmware' },
               { label: 'Load a Core', to: '/getting-started/load-a-core' },
               { label: 'SD Card Setup', to: '/getting-started/sd-card-setup' },

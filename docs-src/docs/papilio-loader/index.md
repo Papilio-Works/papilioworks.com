@@ -12,7 +12,7 @@ Papilio Loader is the official tool for programming Papilio hardware. It program
 - **FPGA (Gowin):** writes a game core or your own design to the FPGA's flash, so it stays loaded after power-off.
 - **ESP32-S3:** installs and updates the FPGA-Companion firmware.
 
-Both work over **USB** or **WiFi**. Loader talks to the [Papilio ESP Bootloader](../getting-started/flash-firmware#what-is-the-papilio-esp-bootloader) on your board, which is what makes programming and recovery reliable.
+Both work over **USB** or **WiFi**. Loader talks to the [Papilio ESP Bootloader](../getting-started/index.md#what-is-the-papilio-esp-bootloader) on your board, which is what makes programming and recovery reliable.
 
 ---
 

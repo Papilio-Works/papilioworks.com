@@ -7,84 +7,11 @@ sidebar_position: 2
 
 # Flash the Firmware
 
-Before anything else works, the ESP32-S3 SuperMini needs two pieces of software: the **Papilio ESP Bootloader**, which lets you program and recover the board, and the **FPGA-Companion** app, which provides the on-screen menu, ROM loading, and controller support for the game core running on the FPGA. This page installs both in one step.
+Before anything else works, the ESP32-S3 SuperMini needs two pieces of software: the **Papilio ESP Bootloader**, which lets you program and recover the board, and the **FPGA-Companion** app, which provides the on-screen menu, ROM loading, and controller support for the game core running on the FPGA. This page installs both in one step. If you need a refresher on how the system works, see the [Retrocade Overview](./index.md).
 
 :::tip[Prefer no install at all?]
 The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — bootloader recovery, WiFi setup, the latest A2600 core, and the Papilio Splash ROM — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
 :::
-
----
-
-## How the Parts Fit Together
-
-Your Retrocade is made of a few pieces of hardware and a few pieces of software. Each piece has one job:
-
-| Part | What it is | What it does |
-|---|---|---|
-| **FPGA core** (for example, the Atari 2600 core) | A design that runs on the FPGA | Recreates a game system and runs the game |
-| **ROM** (a game) | A game file on the SD card | The game the core plays |
-| **FPGA-Companion** | An app on the ESP32-S3 | Loads ROMs into the core, reads your game controllers, and shows the on-screen menu |
-| **Papilio ESP Bootloader** | A small program on the ESP32-S3 | Receives new software and writes it to the board |
-| **Papilio Loader** | Software on your computer | Sends new software to the board |
-
-**The Papilio ESP Bootloader** works with Papilio Loader to install the programs that run on the board: ESP32 user apps like FPGA-Companion, and FPGA bit files like the Atari 2600 core. The bootloader only runs when the board needs to be programmed. The rest of the time your app runs, and the bootloader stays out of the way.
-
-**FPGA-Companion** is an ESP32 user app. It runs whenever you're playing. It loads ROMs into the running FPGA game core, such as the Atari 2600 core, and passes your controller's buttons to it.
-
-**Papilio Loader** runs as a desktop application, a website, or a command-line utility. It uses the bootloader to write ESP32 user apps and FPGA cores to the board, over WiFi or USB. It can also send game ROMs to the board over WiFi, where FPGA-Companion saves them to the SD card and loads them into the core.
-
-```text
-Your computer                     Your Retrocade
-┌──────────────────┐   USB or   ┌────────────────────────────────────────────┐
-│  Papilio Loader  │───WiFi────▶│ ESP32-S3                                   │
-└──────────────────┘            │   Papilio ESP Bootloader ─ writes new apps │
-                                │   FPGA-Companion app ──── loads ROMs       │
-                                │            │                    │          │
-                                │            ▼                    ▼          │
-                                │   FPGA game core ◀──────── SD card (ROMs)  │
-                                └────────────────────────────────────────────┘
-```
-
----
-
-## What is the Papilio ESP Bootloader?
-
-The Papilio ESP Bootloader is a small program that is permanently installed on the board's ESP32. It is what makes the board easy to program and hard to break. In order of importance, it lets you:
-
-1. **Program the FPGA.** Load a game core or your own design onto the FPGA, over USB or over WiFi, with no special programmer. This is how you switch to a different core: program the new core with Papilio Loader.
-2. **Update the ESP32 firmware.** Install new versions of FPGA-Companion over USB or over WiFi. Use USB the first time, then WiFi for everyday updates so the board can stay plugged into your TV.
-3. **Recover a board that won't start.** If an update goes wrong or the board shows nothing on screen, reconnect USB and reinstall. The bootloader is kept separate from FPGA-Companion, so a bad update can't lock you out.
-4. **Join your WiFi network.** You enter your network name and password once, and the board remembers them.
-
-**Papilio Loader uses the bootloader to program both sides of the board:** the ESP32 firmware and the FPGA bitstream, over **USB** or **WiFi**. Use USB for first-time setup and whenever the board isn't on your network yet; use WiFi once it is.
-
-<details>
-<summary>Technical details: flash layout</summary>
-
-The bootloader also keeps two application slots, so a failed update can be rolled back to the last working version automatically. The current 4 MB flash layout is:
-
-| Partition | Address | Purpose |
-| --- | ---: | --- |
-| `factory` | `0x20000` | Papilio ESP Bootloader |
-| `ota_0` | `0x100000` | Active FPGA-Companion application |
-| `ota_1` | `0x280000` | Rollback FPGA-Companion application |
-
-</details>
-
-## What is FPGA-Companion?
-
-FPGA-Companion is the open-source app that runs on the ESP32-S3 whenever you're playing. The bootloader and Papilio Loader get software onto the board; the Companion is what you use day to day with the core that is running on the FPGA.
-
-In order of importance, it:
-
-1. **Loads and manages ROMs.** Browse games on the SD card from the on-screen menu and load them into the running core. You can also send a ROM to the board over WiFi.
-2. **Provides game controller input.** Pair a Bluetooth gamepad, and the Companion passes its buttons to the core.
-3. **Shows the on-screen menu (OSD).** Pick ROMs and adjust settings from your TV with your controller.
-4. **Recognizes the running core** and shows the menu and controls that match it.
-
-The Companion does not program the FPGA or switch cores. The core on the FPGA is whichever one you last programmed with Papilio Loader. See [Core Compatibility](../cores/compatibility) for the available cores and their status.
-
-Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com/Papilio-Retrocade/FPGA-Companion)
 
 ---
 

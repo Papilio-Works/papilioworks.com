@@ -10,7 +10,7 @@ sidebar_position: 2
 Before anything else works, the ESP32-S3 SuperMini needs the **Papilio ESP Bootloader** and a compatible **FPGA-Companion** application. The bootloader is a small, always-resident recovery and update system in the ESP32's factory partition; the Companion app runs in one of its OTA application slots.
 
 :::tip[Prefer no install at all?]
-The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — bootloader recovery, WiFi setup, and first FPGA bitstream — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
+The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — bootloader recovery, WiFi setup, the latest A2600 core, and the Papilio Splash ROM — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
 :::
 
 ---
@@ -60,14 +60,17 @@ Source: [https://github.com/Papilio-Retrocade/FPGA-Companion](https://github.com
 
 ## Recommended: Browser-Based Setup
 
-The [browser-based Getting Started flasher](https://papilioworks.com/getting-started/) is the easiest way to prepare a blank board. It downloads the current recovery image and performs the complete first-time flow:
+The [browser-based Getting Started flasher](https://papilioworks.com/getting-started/) is the easiest way to prepare a blank board. It downloads the current recovery image, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
 
 1. Hold **BOOT** while powering the ESP32-S3 over USB.
 2. Open the Getting Started flasher in Chrome or Edge.
 3. Click **Connect USB**, select the ESP32-S3 port, then click **Install / Recover Board**.
 4. Wait for **ESP32 flashed**. The page closes and reopens the USB connection while the board re-enumerates.
 5. Enter WiFi credentials and click **Send to Board**.
-6. Continue with the page's FPGA bitstream step.
+6. Click **Install Latest A2600 Core**. The page uses WiFi when the board IP is known, or USB serial when it is not.
+7. Insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The ROM is written to the card and requested from the active core.
+
+The ROM upload requires the board to be reachable over WiFi because the Companion's `/rom-load` endpoint writes to the SD card. If the page reports that the ROM was saved but not inserted, close the on-screen display and retry the ROM action.
 
 The recovery image writes the factory bootloader and a compatible Companion application in one USB operation. Use it for a new board or to migrate a board that still uses the older application-centered layout.
 

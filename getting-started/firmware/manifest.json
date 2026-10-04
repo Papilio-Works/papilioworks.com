@@ -1,7 +1,31 @@
 {
-  "version": "loader-recovery-2026-09-29",
-  "fileName": "papilio-retrocade-loader-recovery.bin",
-  "size": 2571104,
-  "description": "Papilio ESP Bootloader recovery image with a compatible user application",
-  "sourceUrl": "local-build"
+  "version": "v2.0.0",
+  "fileName": "papilio-migration-v2.0.0-merged.bin",
+  "size": 2541744,
+  "publishedAt": "2026-10-02T05:29:59Z",
+  "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
+  "fetchedAt": "2026-10-04T04:57:56.478Z",
+  "artifacts": {
+    "bootloader": {
+      "fileName": "papilio-migration-v2.0.0-merged.bin",
+      "size": 2541744,
+      "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
+      "sha256": "9eedbc44c11932999536cf67a35f8f08cfdbc06b1562e11e629bd85d2044947a",
+      "release": "v2.0.0"
+    },
+    "a2600Core": {
+      "fileName": "a2600nano_retrocade.bin",
+      "size": 907418,
+      "sourceUrl": "https://github.com/Papilio-Retrocade/A2600Nano/releases/download/v1.0-retrocade/a2600nano_retrocade.bin",
+      "sha256": "3e634de0d14bafe698a02e561ce0a4fbd38064e1c14965d51be728ff96bb8fa2",
+      "release": "v1.0-retrocade"
+    },
+    "a2600Rom": {
+      "fileName": "a2600crt.bin",
+      "size": 4096,
+      "sourceUrl": "https://github.com/Papilio-Retrocade/A2600Nano/releases/download/v1.0-retrocade/a2600crt.bin",
+      "sha256": "53a5aa03666e2c48a3d8948d638c1a20df64fd1f94b89106f8c2bd25111353cb",
+      "release": "v1.0-retrocade"
+    }
+  }
 }

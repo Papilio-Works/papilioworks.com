@@ -14,12 +14,16 @@ The Loader has two cards: one for the **FPGA** and one for the **ESP32**. Pick a
 ## Connect Your Board
 
 1. Plug the ESP32-S3 into your computer with a USB data cable.
-2. Click **Connect USB** and choose the board's serial port.
-3. To program over WiFi, the board needs to be on your network and Loader needs its IP address:
-   - **Desktop App:** click **Scan LAN for Devices**.
-   - **Web Edition:** open **Board Status** and click **Find My IP**, or type the IP address and click **Use This IP**.
+2. Select a file and press **Program FPGA** or **Program ESP32**. Loader requests
+   USB access when needed. In the Web Edition, authorize the board in the browser
+   serial-port chooser; Electron selects a recognized Papilio board automatically.
+3. To help Loader locate a board on WiFi, open **Board Status** and click
+   **Find My IP**, or type its address and click **Use This IP**.
 
-If the board is not on WiFi yet, enter your network name and password and click **Send WiFi Credentials**. You only need to do this once.
+For first-time WiFi configuration, use Step 2 of the
+[guided Getting Started flasher](https://papilioworks.com/getting-started/).
+The current full loader keeps its older **Connect & Locate Device** panel hidden,
+so you do not need to find a Connect USB or Scan LAN button before programming.
 
 ---
 
@@ -30,6 +34,11 @@ Use this to load a game core or your own design.
 1. Click the file picker on the **FPGA Flash** card and choose a Gowin `.bin` bitstream.
 2. Click **Program FPGA**.
 3. Watch the progress bar. When it finishes, the board returns to your application automatically and the new core starts.
+
+![Current Electron FPGA programming card with optional save-to-library controls](../../static/img/papilio-loader/fpga-card.png)
+
+*Save controls are desktop-only. The Web Edition uses the same file picker and
+Program FPGA button without those controls.*
 
 The core is written to the FPGA's flash, so it is still there after you power the board off.
 
@@ -67,6 +76,10 @@ By default, Loader uses WiFi when it knows your board's IP address and falls bac
 
 WiFi is faster and needs no cable to your computer. USB works any time the board is plugged in.
 
+![Current Advanced options showing transport preference, serial-port visibility, and boot controls](../../static/img/papilio-loader/advanced-options.png)
+
+An ESP32 merged-image install always uses USB regardless of this setting.
+
 ---
 
 ## Board Status and Recovery
@@ -76,13 +89,20 @@ The **Board Status** panel shows whether the board is running the **bootloader**
 - **Start ESP Bootloader** restarts the board into the bootloader.
 - **Resume User App** returns to your application. Loader does this for you after programming.
 
-If a board won't start, click **Recover via USB** in the connection panel. See [Troubleshooting](./troubleshooting).
+For a board that will not start, use the guided
+[Getting Started flasher](https://papilioworks.com/getting-started/) and
+**Install / Recover Board**. See [Troubleshooting](./troubleshooting).
 
 ---
 
 ## The Status Log
 
-Every action is logged with timestamps. Use **Open Log** to watch the board's live boot messages over USB, which is useful when something goes wrong.
+Actions and errors appear in **Status Log**. Use **Open Log** to watch live boot
+messages over USB, **Close Log** to release the USB log connection, and
+**Clear Log** to clear its output. Device messages may include their own timestamps.
+
+For cable-free debug output in the Desktop App, use the separate
+[WiFi Log Monitor](./wifi-log-monitor).
 
 ---
 

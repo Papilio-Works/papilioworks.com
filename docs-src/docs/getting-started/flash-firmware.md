@@ -67,9 +67,9 @@ Papilio Loader can do more than first-time setup, including finding boards on yo
 2. Plug in the USB-C cable while holding BOOT
 3. Release BOOT after 2 seconds — the device is now in ROM download mode
 4. Use the migration image from the browser-based Getting Started flow, or from the [FPGA-Companion v2.0.0 release](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0) (`papilio-migration-v2.0.0-merged.bin`)
-5. In Papilio Loader, click **Connect USB** and choose the board's port, then choose the migration `.bin` on the **ESP32 Flash** card. Loader recognizes the merged image and writes it from the start of flash.
-6. Click **Program ESP32** and wait for it to finish
-7. Reconnect to USB, enter your WiFi credentials, and use Papilio Loader for future updates
+5. In Papilio Loader, choose the migration `.bin` on the **ESP32 Flash** card. Loader recognizes the merged image and writes it from the start of flash.
+6. Click **Program ESP32**, authorize the board's USB port if prompted, and wait for it to finish.
+7. Configure WiFi in Step 2 of the [Getting Started flasher](https://papilioworks.com/getting-started/), and use Papilio Loader for future updates.
 
 ---
 

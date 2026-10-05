@@ -5,3 +5,4 @@
 # Docusaurus local dev
 docs-src/.docusaurus/
 docs-src/node_modules/
+tools/screenshots/node_modules/

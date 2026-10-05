@@ -1,0 +1,11 @@
+{
+  "name": "papilio-docs-screenshots",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture:loader": "node capture-loader-screenshots.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.58.0"
+  }
+}

@@ -34,9 +34,9 @@ The [browser-based Getting Started flasher](https://papilioworks.com/getting-sta
 4. Wait for **ESP32 flashed**. The board reboots and its USB port re-enumerates; the page automatically re-acquires the new port.
 5. Enter WiFi credentials and click **Send to Board**. If it reports *Send failed*, unplug and replug the USB cable, click **Find My IP**, select the port, and click **Send to Board** again.
 6. **Step 3 — Install the A2600 core:** click **Install Latest A2600 Core**. The page uses WiFi when the board IP is known, or USB serial when it is not.
-7. **Step 4 — Load a demo game ROM:** insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The ROM is written to the card and requested from the A2600 core.
+7. **Step 4 — Load a demo game ROM:** insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The ROM is saved as `a2600crt.bin` in the SD-card root and inserted into the A2600 core. The core loads it again after a reboot; no XML config file is needed.
 
-The ROM upload requires the board to be reachable over WiFi because the Companion's `/rom-load` endpoint writes to the SD card. If the page reports that the ROM was saved but not inserted, close the on-screen display and retry the ROM action.
+The ROM upload requires the board to be reachable over WiFi because the Companion's `/rom-load` endpoint writes to the SD card. The root-folder upload requires a Companion version that supports the `location=root` option; if the page reports that the ROM was not saved to the SD-card root, update FPGA-Companion and retry. If the ROM was saved but not inserted, close the on-screen display and retry the ROM action.
 
 The recovery image writes the factory bootloader and a compatible Companion application in one USB operation. Use it for a new board or to migrate a board that still uses the older application-centered layout.
 

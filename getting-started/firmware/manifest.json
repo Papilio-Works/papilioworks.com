@@ -1,11 +1,11 @@
 {
-  "version": "v2.0.0",
-  "fileName": "papilio-migration-v2.0.0-merged.bin",
-  "size": 2541744,
-  "publishedAt": "2026-10-02T05:29:59Z",
-  "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
-  "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0",
-  "fetchedAt": "2026-10-05T20:21:03.512Z",
+  "version": "v2.0.0-root-upload-test",
+  "fileName": "papilio-migration-root-rom-test.bin",
+  "size": 2542048,
+  "builtAt": "2026-10-05T21:45:35-06:00",
+  "sha256": "fd887e170a92b59107509757a8a3ce016c0d6909dce01410cb9ce4d0974a6cc7",
+  "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
+  "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
   "components": {
     "bootloader": {
       "name": "Papilio ESP Bootloader",
@@ -14,19 +14,19 @@
       "repoUrl": "https://github.com/Papilio-Labs/papilio-esp-bootloader"
     },
     "companion": {
-      "name": "FPGA-Companion",
-      "release": "v2.0.0",
-      "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.0.0",
+      "name": "FPGA-Companion test build",
+      "release": "v2.0.0-root-upload-test",
+      "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
       "repoUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion"
     }
   },
   "artifacts": {
     "bootloader": {
-      "fileName": "papilio-migration-v2.0.0-merged.bin",
-      "size": 2541744,
-      "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.0.0/papilio-migration-v2.0.0-merged.bin",
-      "sha256": "b634bd99814243b15d6dd80b1b999b7637e0c269c2f9ea05eff62cdefbcd8434",
-      "release": "v2.0.0"
+      "fileName": "papilio-migration-root-rom-test.bin",
+      "size": 2542048,
+      "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
+      "sha256": "fd887e170a92b59107509757a8a3ce016c0d6909dce01410cb9ce4d0974a6cc7",
+      "release": "v2.0.0-root-upload-test"
     },
     "a2600Core": {
       "fileName": "a2600nano_retrocade.bin",

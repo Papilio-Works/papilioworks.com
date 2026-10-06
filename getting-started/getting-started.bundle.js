@@ -2392,7 +2392,7 @@ async function flashFpgaOta(poster, ip, endpoint, body, onProgress, port = OTA_P
   return poster.post(url, body, onProgress);
 }
 async function uploadRomOta(poster, ip, fileName, body, onProgress, port = OTA_PORT) {
-  const url = `http://${ip}:${port}/rom-load?name=${encodeURIComponent(fileName)}&location=root`;
+  const url = `http://${ip}:${port}/rom-load?name=${encodeURIComponent(fileName)}`;
   return poster.post(url, body, onProgress);
 }
 function createBrowserXhrPoster() {
@@ -9908,7 +9908,7 @@ function initFlashPage(doc = document) {
   let bundledFirmware = null;
   let bundledA2600Core = null;
   let bundledA2600Rom = null;
-  const assetVersion = true ? "v2.1.0" : "dev";
+  const assetVersion = true ? "0.4.8" : "dev";
   function renderFirmwareSources(manifest) {
     const el = doc.getElementById("esp32-sources");
     const components = manifest.components;
@@ -10486,14 +10486,7 @@ function initFlashPage(doc = document) {
       setStatus(els.statusRom, "Uploading the Papilio Splash demo ROM\u2026");
       const responseText = await uploadRomOta(otaPoster, deviceIp, bundledA2600Rom.fileName, data.buffer, updateRomProgress);
       log(responseText);
-      const savedPath = responseText.match(/->\s+([^\r\n]+)/)?.[1]?.trim();
-      const savedPathParts = (savedPath || "").split("/").filter(Boolean);
-      const filenameAtRoot = savedPathParts[savedPathParts.length - 1] === bundledA2600Rom.fileName &&
-        (savedPathParts.length === 1 || (savedPathParts.length === 2 && savedPathParts[0] === "sd"));
-      if (!filenameAtRoot) {
-        throw new Error("This FPGA-Companion firmware did not save the ROM to the SD-card root. Update FPGA-Companion to a version that supports root uploads, then retry.");
-      }
-      setStatus(els.statusRom, "Papilio Splash ROM saved to the SD-card root and inserted. It will load again after reboot. A FAT-formatted SD card is required.", "ok");
+      setStatus(els.statusRom, "Papilio Splash ROM uploaded and inserted. A FAT-formatted SD card is required.", "ok");
     } catch (err2) {
       log(`ROM upload failed: ${err2.message}`);
       const hint = /HTTP 5\d\d|f_open|SD/i.test(err2.message) ? " Make sure a FAT-formatted microSD card is inserted in the board." : "";

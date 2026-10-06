@@ -1,11 +1,11 @@
 {
-  "version": "v2.0.0-root-upload-test",
-  "fileName": "papilio-migration-root-rom-test.bin",
+  "version": "v2.1.0",
+  "fileName": "papilio-migration-v2.1.0-merged.bin",
   "size": 2542048,
-  "builtAt": "2026-10-05T21:45:35-06:00",
-  "sha256": "fd887e170a92b59107509757a8a3ce016c0d6909dce01410cb9ce4d0974a6cc7",
+  "builtAt": "2026-10-05T22:04:26-06:00",
+  "sha256": "95c77f89a0459174f415326a283b7cd3c58f0f57789edc0039ab25374e4cb581",
   "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
-  "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
+  "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.1.0",
   "components": {
     "bootloader": {
       "name": "Papilio ESP Bootloader",
@@ -14,19 +14,19 @@
       "repoUrl": "https://github.com/Papilio-Labs/papilio-esp-bootloader"
     },
     "companion": {
-      "name": "FPGA-Companion test build",
-      "release": "v2.0.0-root-upload-test",
-      "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
+      "name": "FPGA-Companion",
+      "release": "v2.1.0",
+      "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.1.0",
       "repoUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion"
     }
   },
   "artifacts": {
     "bootloader": {
-      "fileName": "papilio-migration-root-rom-test.bin",
+      "fileName": "papilio-migration-v2.1.0-merged.bin",
       "size": 2542048,
-      "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion",
-      "sha256": "fd887e170a92b59107509757a8a3ce016c0d6909dce01410cb9ce4d0974a6cc7",
-      "release": "v2.0.0-root-upload-test"
+      "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.1.0/papilio-migration-v2.1.0-merged.bin",
+      "sha256": "95c77f89a0459174f415326a283b7cd3c58f0f57789edc0039ab25374e4cb581",
+      "release": "v2.1.0"
     },
     "a2600Core": {
       "fileName": "a2600nano_retrocade.bin",

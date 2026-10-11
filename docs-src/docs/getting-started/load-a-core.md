@@ -21,14 +21,27 @@ If you followed the [browser-based setup](./flash-firmware#recommended-browser-b
 
 ---
 
+## Available Core Downloads
+
+Download a Retrocade-ready `.bin` bitstream for the core you want to load:
+
+| Core | Download |
+|---|---|
+| Atari 2600 (A2600Nano) | [a2600nano_retrocade.bin](https://github.com/Papilio-Retrocade/A2600Nano/releases/download/v1.0-retrocade/a2600nano_retrocade.bin) |
+| Commodore 64 (C64Nano) | [C64Nano_Retrocade.bin](https://github.com/Papilio-Retrocade/C64Nano/releases/download/v2.9.7-retrocade/C64Nano_Retrocade.bin) |
+
+More core downloads will be added as Retrocade-ready releases become available. See [Core Compatibility](../cores/compatibility) for the status of other ports.
+
+---
+
 ## Load a Core with Papilio Loader
 
-1. Download the core's `.bin` bitstream from the [Papilio Retrocade GitHub organization](https://github.com/Papilio-Retrocade). Each core has its own repository with a release.
-2. Open the [Papilio Loader web edition](https://papilioworks.com/loader/) in Chrome or Edge, or use the desktop app.
+1. Download the `.bin` bitstream for the core from the table above.
+2. Open the [Papilio Loader Web Edition](https://papilioworks.com/loader/) in Chrome or Edge, or use the desktop app. The link opens Loader; it does not select the core file for you.
 3. In the **FPGA** card, choose a transport:
    - **WiFi** is the fastest, and needs the board to be on your network.
    - **USB** works any time the board is connected to your computer.
-4. Choose the `.bin` file and click **Flash FPGA**.
+4. Choose the downloaded `.bin` file and click **Program FPGA**.
 5. Wait for the progress bar to finish. The core starts automatically and the Companion menu appears on your display.
 
 :::warning[Only .bin files work]

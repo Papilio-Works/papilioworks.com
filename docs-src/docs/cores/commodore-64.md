@@ -15,6 +15,14 @@ Based on [C64Nano](https://github.com/Papilio-Retrocade/C64Nano) — ported to t
 
 ---
 
+## Download
+
+Download the C64 bitstream for Papilio Retrocade: [C64Nano_Retrocade.bin](https://github.com/Papilio-Retrocade/C64Nano/releases/download/v2.9.7-retrocade/C64Nano_Retrocade.bin).
+
+See [Load a Core](../getting-started/load-a-core) for instructions to program it with Papilio Loader.
+
+---
+
 ## Compatibility
 
 :::note[Content Coming Soon]

@@ -9908,7 +9908,7 @@ function initFlashPage(doc = document) {
   let bundledFirmware = null;
   let bundledA2600Core = null;
   let bundledA2600Rom = null;
-  const assetVersion = true ? "0.4.9" : "dev";
+  const assetVersion = true ? "0.5.0" : "dev";
   function renderFirmwareSources(manifest) {
     const el = doc.getElementById("esp32-sources");
     const components = manifest.components;
@@ -10499,11 +10499,11 @@ function initFlashPage(doc = document) {
   els.btnLoadRom?.addEventListener("click", loadBundledRom);
 }
 
-// src/getting-started-entry.js
+// src/board-recovery-entry.js
 initFlashPage();
 /*! Bundled license information:
 
 pako/dist/pako.esm.mjs:
   (*! pako 2.2.0 https://github.com/nodeca/pako @license (MIT AND Zlib) *)
 */
-//# sourceMappingURL=getting-started.bundle.js.map
+//# sourceMappingURL=board-recovery.bundle.js.map

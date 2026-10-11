@@ -41,7 +41,7 @@ Quick fixes for the most common Papilio Loader issues.
 Try these in order:
 
 1. **Resume User App** or **Start ESP Bootloader** under **Advanced options**, to see whether the board answers.
-2. Open the [Getting Started flasher](https://papilioworks.com/getting-started/) and use **Install / Recover Board**.
+2. Open the [Board Recovery page](https://papilioworks.com/board-recovery/) and use **Install / Recover Board**.
 3. If USB is not available, hold **BOOT**, press **RESET**, then authorize the board's USB port and retry recovery.
 
 The full loader's older connection panel is hidden in the current interface;

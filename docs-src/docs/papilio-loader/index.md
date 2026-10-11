@@ -71,7 +71,7 @@ A WiFi log pop-out can remain open while the main window is hidden.
 
 ## First-Time Setup of a New Board
 
-If your board is brand new, or you're recovering one, use the guided **[Getting Started flasher](https://papilioworks.com/getting-started/)**. Its four steps install the bootloader and FPGA-Companion, configure WiFi, install the Atari 2600 core, and load a demo ROM onto an SD card. See [Flash the Firmware](../getting-started/flash-firmware) for the steps.
+If your board is brand new, or you're recovering one, use the guided **[Board Recovery page](https://papilioworks.com/board-recovery/)**. Its four steps install the bootloader and FPGA-Companion, configure WiFi, install the Atari 2600 core, and load a demo ROM onto an SD card. See [Flash the Firmware](../getting-started/flash-firmware) for the steps.
 
 ---
 

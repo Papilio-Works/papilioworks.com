@@ -10,7 +10,7 @@ sidebar_position: 2
 Before anything else works, the ESP32-S3 SuperMini needs two pieces of software: the **Papilio ESP Bootloader**, which lets you program and recover the board, and the **FPGA-Companion** app, which provides the on-screen menu, ROM loading, and controller support for the game core running on the FPGA. This page installs both in one step. If you need a refresher on how the system works, see the [Retrocade Overview](./index.md).
 
 :::tip[Prefer no install at all?]
-The **[browser-based Getting Started flasher](https://papilioworks.com/getting-started/)** does this whole page — bootloader recovery, WiFi setup, the latest A2600 core, and the Papilio Splash ROM — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
+The **[browser-based Board Recovery page](https://papilioworks.com/board-recovery/)** does this whole page — bootloader recovery, WiFi setup, the latest A2600 core, and the Papilio Splash ROM — from a single guided page in Chrome or Edge, no download or install required. Use it instead of the manual setup below if you'd rather not install Papilio Loader locally.
 :::
 
 ---
@@ -26,10 +26,10 @@ The **[browser-based Getting Started flasher](https://papilioworks.com/getting-s
 
 ## Recommended: Browser-Based Setup
 
-The [browser-based Getting Started flasher](https://papilioworks.com/getting-started/) is the easiest way to prepare a blank board. It downloads the current Papilio ESP32 Bootloader, FPGA Companion ESP32 app, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
+The [browser-based Board Recovery page](https://papilioworks.com/board-recovery/) is the easiest way to prepare a blank board. It downloads the current Papilio ESP32 Bootloader, FPGA Companion ESP32 app, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
 
 1. Hold **BOOT** while powering the ESP32-S3 over USB.
-2. Open the Getting Started flasher in Chrome or Edge.
+2. Open the Board Recovery page in Chrome or Edge.
 3. Click **Connect USB**, select the ESP32-S3 port, then click **Install / Recover Board**.
 4. Wait for **ESP32 flashed**. The board reboots and its USB port re-enumerates; the page automatically re-acquires the new port.
 5. Enter WiFi credentials and click **Send to Board**. If it reports *Send failed*, unplug and replug the USB cable, click **Find My IP**, select the port, and click **Send to Board** again.
@@ -69,7 +69,7 @@ Papilio Loader can do more than first-time setup, including finding boards on yo
 4. Use the migration image from the browser-based Getting Started flow, or from the [FPGA-Companion v2.2.0 release](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.2.0) (`papilio-migration-v2.2.0-merged.bin`)
 5. In Papilio Loader, choose the migration `.bin` on the **ESP32 Flash** card. Loader recognizes the merged image and writes it from the start of flash.
 6. Click **Program ESP32**, authorize the board's USB port if prompted, and wait for it to finish.
-7. Configure WiFi in Step 2 of the [Getting Started flasher](https://papilioworks.com/getting-started/), and use Papilio Loader for future updates.
+7. Configure WiFi in Step 2 of the [Board Recovery page](https://papilioworks.com/board-recovery/), and use Papilio Loader for future updates.
 
 ---
 

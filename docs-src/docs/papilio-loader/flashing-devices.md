@@ -21,7 +21,7 @@ The Loader has two cards: one for the **FPGA** and one for the **ESP32**. Pick a
    **Find My IP**, or type its address and click **Use This IP**.
 
 For first-time WiFi configuration, use Step 2 of the
-[guided Getting Started flasher](https://papilioworks.com/getting-started/).
+[guided Board Recovery page](https://papilioworks.com/board-recovery/).
 The current full loader keeps its older **Connect & Locate Device** panel hidden,
 so you do not need to find a Connect USB or Scan LAN button before programming.
 
@@ -90,7 +90,7 @@ The **Board Status** panel shows whether the board is running the **bootloader**
 - **Resume User App** returns to your application. Loader does this for you after programming.
 
 For a board that will not start, use the guided
-[Getting Started flasher](https://papilioworks.com/getting-started/) and
+[Board Recovery page](https://papilioworks.com/board-recovery/) and
 **Install / Recover Board**. See [Troubleshooting](./troubleshooting).
 
 ---

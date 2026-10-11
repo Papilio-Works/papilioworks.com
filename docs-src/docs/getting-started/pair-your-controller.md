@@ -71,7 +71,9 @@ Default mapping varies by core. The OSD menu allows remapping all buttons.
 
 ## Using a USB Keyboard or Gamepad
 
-Plug into the **USB-C port** on the ESP32-S3 SuperMini using a USB-C adapter or OTG cable. USB HID devices are recognized automatically — no pairing needed.
+USB Host is **off by default**. To enable it, start FPGA-Companion and press the board's **BOOT** button once. The board will restart, and the RGB LED will turn **turquoise** when it comes back up.
+
+Open the OSD menu and confirm that **USB Host** is **On**. You can now connect a keyboard, mouse, or gamepad to the ESP32-S3 SuperMini's **USB-C port** using a USB-C adapter or OTG cable. USB HID devices are recognized automatically — no pairing needed.
 
 :::tip[C64 Users]
 A USB keyboard is very useful for the C64 core, which supports full keyboard input for BASIC and games that use keyboard controls.

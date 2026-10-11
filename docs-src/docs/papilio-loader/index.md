@@ -41,7 +41,7 @@ desktop-only.
 
 ### Desktop App
 
-1. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases).
+1. Download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader/releases).
 2. Run the installer and launch **Papilio Loader** from the Start Menu.
 
 The published installer supports **Windows x64**. On macOS or Linux, use the

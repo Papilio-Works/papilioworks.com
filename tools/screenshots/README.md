@@ -6,7 +6,7 @@ Example file metadata and log lines are illustrative and labeled accordingly.
 No USB device, UDP socket, MCP server, real user library, or WiFi credentials
 are accessed. The web screenshot comes from the live hosted loader.
 
-Build the web and desktop workspaces in `papilio-loader-mcp` first, including
+Build the web and desktop workspaces in the `papilio-loader` repository first, including
 its setup firmware. Then run from this directory:
 
 ```powershell

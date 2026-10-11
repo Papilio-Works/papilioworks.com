@@ -1,6 +1,6 @@
 """Capture documentation screenshots of the Papilio Loader web UI.
 
-Starts the Papilio Loader server (from the papilio-loader-mcp repo), navigates
+Starts the Papilio Loader server (from the papilio-loader repo), navigates
 each web UI page with Playwright, and saves consistent PNG screenshots into
 the Docusaurus static image folder.
 
@@ -169,7 +169,7 @@ def main() -> int:
         "--loader-repo",
         type=Path,
         default=DEFAULT_LOADER_REPO,
-        help=f"Path to the papilio-loader-mcp repo (default: {DEFAULT_LOADER_REPO})",
+        help=f"Path to the papilio-loader repo (default: {DEFAULT_LOADER_REPO})",
     )
     parser.add_argument(
         "--out",

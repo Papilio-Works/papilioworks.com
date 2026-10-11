@@ -55,7 +55,7 @@ Papilio Loader is the official tool for programming Papilio hardware. It can pro
 - **USB:** recover or program the ESP32, and program the FPGA when WiFi is unavailable.
 - **WiFi:** update the ESP32 application and program the FPGA remotely after the board has joined your network.
 
-Use the **[Web Edition](https://papilioworks.com/loader/)** in Chrome or Edge with nothing to install, or install the Windows **Desktop App**: download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader-mcp/releases) and launch **Papilio Loader** from the Start Menu.
+Use the **[Web Edition](https://papilioworks.com/loader/)** in Chrome or Edge with nothing to install, or install the Windows **Desktop App**: download `PapilioLoader-Setup-x.x.x.exe` from the [releases page](https://github.com/Papilio-Labs/papilio-loader/releases) and launch **Papilio Loader** from the Start Menu.
 
 :::tip
 Papilio Loader can do more than first-time setup, including finding boards on your network, a saved files library, live WiFi logs, and AI assistant support. See the full [Papilio Loader documentation](../papilio-loader/index.md).

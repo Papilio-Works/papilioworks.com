@@ -28,13 +28,15 @@ The **[browser-based Board Recovery page](https://papilioworks.com/board-recover
 
 The [browser-based Board Recovery page](https://papilioworks.com/board-recovery/) is the easiest way to prepare a blank board. It downloads the current Papilio ESP32 Bootloader, FPGA Companion ESP32 app, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
 
-1. Hold **BOOT** while powering the ESP32-S3 over USB.
+1. If needed, hold **BOOT** while powering the ESP32-S3 over USB to enter factory boot mode.
 2. Open the Board Recovery page in Chrome or Edge.
-3. Click **Connect USB**, select the ESP32-S3 port, then click **Install / Recover Board**.
+3. Click **Connect USB**, select the lower-numbered of the two serial ports shown for the Retrocade's ESP32, then click **Install / Recover Board**.
 4. Wait for **ESP32 flashed**. The board reboots and its USB port re-enumerates; the page automatically re-acquires the new port.
 5. Enter WiFi credentials and click **Send to Board**. If it reports *Send failed*, unplug and replug the USB cable, click **Find My IP**, select the port, and click **Send to Board** again.
 6. **Step 3 — Install the A2600 core:** click **Install Latest A2600 Core**. The page uses WiFi when the board IP is known, or USB serial when it is not.
 7. **Step 4 — Load a demo game ROM:** insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The page uploads the ROM to the SD card and starts it on the A2600 core.
+
+When you connect the Retrocade over USB, the ESP32 usually appears as two serial ports. If you are not sure which ports belong to the board, unplug it and note which ports disappear, then plug it back in and watch for those ports to return. Select the lower-numbered port.
 
 The ROM upload requires WiFi and a known device IP from Step 2, as well as a FAT-formatted SD card.
 

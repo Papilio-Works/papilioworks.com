@@ -14,7 +14,7 @@ Papilio Loader is the official tool for programming Papilio hardware. It program
 
 Both work over **USB** or **WiFi**. Loader talks to the [Papilio ESP Bootloader](../getting-started/index.md#what-is-the-papilio-esp-bootloader) on your board, which is what makes programming and recovery reliable.
 
-This guide covers **Papilio Loader v0.4.8**, the current Electron desktop app and
+This guide covers **Papilio Loader v0.4.9**, the current Electron desktop app and
 its shared Web Edition. There is no Python server to start and no loader login.
 
 ---

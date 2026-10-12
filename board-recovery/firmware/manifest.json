@@ -8,7 +8,7 @@
     "bootloaderApp": "https://github.com/Papilio-Labs/papilio-esp-bootloader/releases/download/v0.1.1/papilio-esp-bootloader-v0.1.1.bin",
     "companionMigration": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.0/papilio-migration-v2.2.0-merged.bin"
   },
-  "fetchedAt": "2026-10-12T02:10:34.948Z",
+  "fetchedAt": "2026-10-12T20:52:34.888Z",
   "components": {
     "bootloader": {
       "name": "Papilio ESP Bootloader",

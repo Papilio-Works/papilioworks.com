@@ -1,14 +1,15 @@
 {
-  "version": "Bootloader v0.1.1 + FPGA-Companion v2.2.0",
-  "fileName": "papilio-migration-v2.2.0-bootloader-v0.1.1-merged.bin",
-  "size": 2543792,
-  "publishedAt": "2026-10-10T23:56:47Z",
-  "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.0/papilio-migration-v2.2.0-merged.bin",
+  "version": "Bootloader v0.1.1 + FPGA-Companion v2.2.1",
+  "fileName": "papilio-migration-v2.2.1-bootloader-v0.1.1-merged.bin",
+  "size": 2546224,
+  "publishedAt": "2026-10-15T02:49:45Z",
+  "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.1/papilio-migration-v2.2.1-merged.bin",
   "sourceAssets": {
     "bootloaderApp": "https://github.com/Papilio-Labs/papilio-esp-bootloader/releases/download/v0.1.1/papilio-esp-bootloader-v0.1.1.bin",
-    "companionMigration": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.0/papilio-migration-v2.2.0-merged.bin"
+    "companionApp": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.1/fpga_companion-v2.2.1.bin",
+    "companionMigration": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.1/papilio-migration-v2.2.1-merged.bin"
   },
-  "fetchedAt": "2026-10-14T16:29:13.089Z",
+  "fetchedAt": "2026-10-15T02:50:36.984Z",
   "components": {
     "bootloader": {
       "name": "Papilio ESP Bootloader",
@@ -18,17 +19,17 @@
     },
     "companion": {
       "name": "FPGA-Companion",
-      "release": "v2.2.0",
-      "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.2.0",
+      "release": "v2.2.1",
+      "releaseUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.2.1",
       "repoUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion"
     }
   },
   "artifacts": {
     "bootloader": {
-      "fileName": "papilio-migration-v2.2.0-bootloader-v0.1.1-merged.bin",
-      "size": 2543792,
-      "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.0/papilio-migration-v2.2.0-merged.bin",
-      "sha256": "8ce79cb1aba084c5c5768bf64a0bf719f5ee5c473b4073e45cb3fd0d28c07003",
+      "fileName": "papilio-migration-v2.2.1-bootloader-v0.1.1-merged.bin",
+      "size": 2546224,
+      "sourceUrl": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.1/papilio-migration-v2.2.1-merged.bin",
+      "sha256": "a98650d30923915ea72136f884cf24cb8f3d7012df8e98636f84a88a79544689",
       "release": "v0.1.1"
     },
     "a2600Core": {

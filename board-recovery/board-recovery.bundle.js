@@ -9825,7 +9825,6 @@ function setStatus(el, message, kind) {
 }
 
 // ../../packages/loader-ui/src/flash-page.js
-var A2600_SD_ROM_NAME = "a2600.crt";
 function initFlashPage(doc = document) {
   const els = {
     unsupportedBanner: doc.getElementById("unsupported-banner"),
@@ -10486,11 +10485,11 @@ function initFlashPage(doc = document) {
         throw new Error(`FPGA-Companion did not answer at ${deviceIp}. Check the board is on WiFi, then retry.`);
       }
       setStatus(els.statusRom, "Uploading the Papilio Splash demo ROM\u2026");
-      const responseText = await uploadRomOta(otaPoster, deviceIp, A2600_SD_ROM_NAME, data.buffer, updateRomProgress, OTA_PORT, { location: "root" });
+      const responseText = await uploadRomOta(otaPoster, deviceIp, bundledA2600Rom.fileName, data.buffer, updateRomProgress, OTA_PORT, { location: "root" });
       log(responseText);
       const savedPath = responseText.match(/->\s+([^\r\n]+)/)?.[1]?.trim();
       const savedPathParts = (savedPath || "").split("/").filter(Boolean);
-      const savedAtRoot = savedPathParts[savedPathParts.length - 1] === A2600_SD_ROM_NAME && (savedPathParts.length === 1 || savedPathParts.length === 2 && savedPathParts[0] === "sd");
+      const savedAtRoot = savedPathParts[savedPathParts.length - 1] === bundledA2600Rom.fileName && (savedPathParts.length === 1 || savedPathParts.length === 2 && savedPathParts[0] === "sd");
       if (!savedAtRoot) {
         throw new Error("This FPGA-Companion firmware did not save the ROM to the SD-card root. Update FPGA-Companion to a version that supports root uploads, then retry.");
       }

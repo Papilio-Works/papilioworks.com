@@ -2391,8 +2391,9 @@ async function flashFpgaOta(poster, ip, endpoint, body, onProgress, port = OTA_P
   const url = `http://${ip}:${port}${endpoint}`;
   return poster.post(url, body, onProgress);
 }
-async function uploadRomOta(poster, ip, fileName, body, onProgress, port = OTA_PORT) {
-  const url = `http://${ip}:${port}/rom-load?name=${encodeURIComponent(fileName)}`;
+async function uploadRomOta(poster, ip, fileName, body, onProgress, port = OTA_PORT, options = {}) {
+  const location = options.location ? `&location=${encodeURIComponent(options.location)}` : "";
+  const url = `http://${ip}:${port}/rom-load?name=${encodeURIComponent(fileName)}${location}`;
   return poster.post(url, body, onProgress);
 }
 function createBrowserXhrPoster() {
@@ -9824,6 +9825,7 @@ function setStatus(el, message, kind) {
 }
 
 // ../../packages/loader-ui/src/flash-page.js
+var A2600_SD_ROM_NAME = "a2600.crt";
 function initFlashPage(doc = document) {
   const els = {
     unsupportedBanner: doc.getElementById("unsupported-banner"),
@@ -10484,9 +10486,15 @@ function initFlashPage(doc = document) {
         throw new Error(`FPGA-Companion did not answer at ${deviceIp}. Check the board is on WiFi, then retry.`);
       }
       setStatus(els.statusRom, "Uploading the Papilio Splash demo ROM\u2026");
-      const responseText = await uploadRomOta(otaPoster, deviceIp, bundledA2600Rom.fileName, data.buffer, updateRomProgress);
+      const responseText = await uploadRomOta(otaPoster, deviceIp, A2600_SD_ROM_NAME, data.buffer, updateRomProgress, OTA_PORT, { location: "root" });
       log(responseText);
-      setStatus(els.statusRom, "Papilio Splash ROM uploaded and inserted. A FAT-formatted SD card is required.", "ok");
+      const savedPath = responseText.match(/->\s+([^\r\n]+)/)?.[1]?.trim();
+      const savedPathParts = (savedPath || "").split("/").filter(Boolean);
+      const savedAtRoot = savedPathParts[savedPathParts.length - 1] === A2600_SD_ROM_NAME && (savedPathParts.length === 1 || savedPathParts.length === 2 && savedPathParts[0] === "sd");
+      if (!savedAtRoot) {
+        throw new Error("This FPGA-Companion firmware did not save the ROM to the SD-card root. Update FPGA-Companion to a version that supports root uploads, then retry.");
+      }
+      setStatus(els.statusRom, "Papilio Splash ROM saved to the SD-card root and inserted. It will load again after reboot. A FAT-formatted SD card is required.", "ok");
     } catch (err2) {
       log(`ROM upload failed: ${err2.message}`);
       const hint = /HTTP 5\d\d|f_open|SD/i.test(err2.message) ? " Make sure a FAT-formatted microSD card is inserted in the board." : "";

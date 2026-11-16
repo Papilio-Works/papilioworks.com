@@ -26,6 +26,19 @@ The **[browser-based Board Recovery page](https://papilioworks.com/board-recover
 
 ## Recommended: Browser-Based Setup
 
+**Watch: Set Up a Board with the Board Recovery Page (2 minutes)**
+
+<div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '8px', marginBottom: '1rem'}}>
+  <iframe
+    src="https://www.youtube-nocookie.com/embed/sPk5SLPhIqc"
+    title="Set Up a Papilio Retrocade with One Web Page"
+    style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0}}
+    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerPolicy="strict-origin-when-cross-origin"
+    allowFullScreen
+  />
+</div>
+
 The [browser-based Board Recovery page](https://papilioworks.com/board-recovery/) is the easiest way to prepare a blank board. It downloads the current Papilio ESP32 Bootloader, FPGA Companion ESP32 app, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
 
 1. If needed, hold **BOOT** while powering the ESP32-S3 over USB to enter factory boot mode.

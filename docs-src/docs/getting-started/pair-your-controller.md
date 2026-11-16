@@ -75,6 +75,8 @@ USB Host is **off by default**. To enable it, start FPGA-Companion and press the
 
 Open the OSD menu and confirm that **USB Host** is **On**. You can now connect a keyboard, mouse, or gamepad to the ESP32-S3 SuperMini's **USB-C port** using a USB-C adapter or OTG cable. USB HID devices are recognized automatically — no pairing needed.
 
+While the ESP32-S3's USB-C port is used for a USB device, power the board through the **Retrocade board's USB-C port** (the one wired to the FPGA).
+
 :::tip[C64 Users]
 A USB keyboard is very useful for the C64 core, which supports full keyboard input for BASIC and games that use keyboard controls.
 :::
@@ -102,7 +104,7 @@ To remove a paired controller, navigate to **Settings → Bluetooth → Manage D
 
 ## You're Ready to Play
 
-Everything is set up. Connect your HDMI cable to a monitor, power on the Retrocade via USB-C, and use the OSD to select a ROM.
+Everything is set up. Connect your HDMI cable to a monitor, power on the Retrocade through the ESP32-S3 SuperMini's USB-C port, and use the OSD to select a ROM.
 
 ---
 

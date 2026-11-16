@@ -80,7 +80,7 @@ Papilio Loader can do more than first-time setup, including finding boards on yo
 1. After reflashing, unplug USB from your computer
 2. Plug the ESP32-S3 SuperMini into the Retrocade board header
 3. Connect HDMI to a monitor
-4. Power via USB-C into the Retrocade's USB-C port
+4. Power the board through the ESP32-S3 SuperMini's USB-C port
 5. You should see the FPGA-Companion OSD on your screen. The bootloader remains installed in the factory partition and continues to provide recovery and update services independently of the OSD application.
 
 When fully assembled, the system looks like this — ESP32-S3 in its header at the top-left, Tang Primer 20K in the SO-DIMM socket:

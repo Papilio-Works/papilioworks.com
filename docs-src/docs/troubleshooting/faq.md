@@ -22,7 +22,7 @@ This FAQ will be populated from real support questions as they come in. Check ba
 **Nothing on screen after powering on**
 - Confirm HDMI is connected to the Retrocade board, not the Tang Primer 20K
 - Confirm ESP32-S3 is fully seated in the header
-- Confirm you're using the Retrocade USB-C for power, not the Tang Primer 20K's USB
+- Confirm you're powering the board through the ESP32-S3 SuperMini's USB-C port, not the Tang Primer 20K's USB
 
 **FPGA-Companion OSD appears but no core loaded**
 - Load a core bitfile — see [Load a Core](../getting-started/load-a-core)

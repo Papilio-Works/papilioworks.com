@@ -58,6 +58,11 @@ const config = {
             label: 'Docs',
           },
           {
+            to: '/learn/getting-started',
+            label: 'Course',
+            position: 'left',
+          },
+          {
             href: 'https://papilioworks.com',
             label: 'Back to papilioworks.com',
             position: 'right',

@@ -26,9 +26,9 @@ Categories:
 
 ## GitHub
 
-All code is open source and lives across two GitHub organizations:
+All code is open source (except the Retrocade board's hardware design) and lives across two GitHub organizations:
 
-- **[Papilio-Retrocade](https://github.com/Papilio-Retrocade)** — product repos: core ports, FPGA-Companion, hardware
+- **[Papilio-Retrocade](https://github.com/Papilio-Retrocade)** — product repos: core ports and FPGA-Companion
 - **[Papilio-Labs](https://github.com/Papilio-Labs)** — platform libraries: Wishbone bus, tooling
 
 Issues, PRs, and discussions welcome.

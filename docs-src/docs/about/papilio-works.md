@@ -23,9 +23,8 @@ In 2019, Jack stepped back from Gadget Factory to work full-time at Kyndryl. But
 
 ## Open Source
 
-The Retrocade hardware, firmware, and core ports are open source:
+The Retrocade firmware, core ports, and platform libraries are open source. The one exception is the Retrocade board's hardware design, which is not:
 
-- Hardware: [github.com/Papilio-Retrocade/papilio_retrocade_hardware](https://github.com/Papilio-Retrocade)
 - Firmware (FPGA-Companion): [github.com/Papilio-Retrocade/FPGA-Companion](https://github.com/Papilio-Retrocade)
 - Core repos: [github.com/Papilio-Retrocade](https://github.com/Papilio-Retrocade)
 - Platform libraries: [github.com/Papilio-Labs](https://github.com/Papilio-Labs)

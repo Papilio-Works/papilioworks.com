@@ -11,6 +11,19 @@ Welcome to the **Papilio Retrocade 20K** — an FPGA retro gaming system built a
 
 This page explains the hardware and software that make up your Retrocade, and how they fit together. The rest of the guide walks you from unboxing to your first game running. Target time: **under 30 minutes**.
 
+**Watch first: Meet the Retrocade (3 minutes)**
+
+<div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '8px', marginBottom: '1rem'}}>
+  <iframe
+    src="https://www.youtube-nocookie.com/embed/CSiHUbUXDKk"
+    title="Meet the Papilio Retrocade"
+    style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0}}
+    allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerPolicy="strict-origin-when-cross-origin"
+    allowFullScreen
+  />
+</div>
+
 ---
 
 ## The Hardware
@@ -21,7 +34,7 @@ The Retrocade system is built from three modular boards:
 Designed by Papilio Works. Provides:
 - **HDMI** video output
 - **3.5mm stereo audio** output
-- **USB-C** power input
+- **USB-C** port wired to the FPGA (powers the board while the ESP32's USB-C port is used for a USB keyboard, mouse or gamepad)
 - **Winbond 32 MB SDRAM** for core use
 - **PMOD** expansion connector
 - **WS2812B** RGB status LED
@@ -125,15 +138,15 @@ Papilio Loader is the tool you use on your computer to put software on the board
 
 ## What's Included
 
-| Item | Board Only | Full Kit |
-|---|---|---|
-| Papilio Retrocade PCB | ✓ | ✓ |
-| Tang Primer 20K | — | ✓ |
-| ESP32-S3 SuperMini | — | ✓ |
-| FPGA-Companion firmware (preloaded) | ✓ | ✓ |
-| A2600 + C64 cores (included) | ✓ | ✓ |
+| Item | Included? |
+|---|---|
+| Papilio Retrocade PCB | ✓ |
+| ESP32-S3 SuperMini | ✓ |
+| Tang Primer 20K | Not included for now: buy it from Sipeed (see below) |
+| FPGA-Companion firmware (preloaded) | ✓ |
+| A2600 + C64 cores (included) | ✓ |
 
-> **Board only buyers:** You will need a Tang Primer 20K and an ESP32-S3 SuperMini. Both are available on AliExpress/Amazon.
+> **For now, you supply the Tang Primer 20K core module.** Buy it directly from Sipeed's official AliExpress store; see [Tang Primer 20K: Where to Buy](../hardware/tang-primer-20k#where-to-buy) for exactly which board to get. The Retrocade board and the ESP32-S3 SuperMini are included.
 
 ---
 
@@ -154,7 +167,7 @@ Papilio Loader is the tool you use on your computer to put software on the board
 2. **[Load a core](./load-a-core)** — program the A2600 or C64 bitstream onto the FPGA with Papilio Loader
 3. **[Set up your SD card](./sd-card-setup)** — format FAT32, create folders, copy ROMs
 4. **[Pair your controller](./pair-your-controller)** — connect your Xbox/PS4/PS5 gamepad over BLE
-5. Connect HDMI and USB-C power, navigate the OSD menu, and play
+5. Connect HDMI, power the board through the ESP32-S3 SuperMini's USB-C port, navigate the OSD menu, and play
 
 ---
 

@@ -31,12 +31,13 @@ The Gowin GW2A-LV18 FPGA and 128 MB DDR3 dominate the module; the gold SO-DIMM e
 
 ## Where to Buy
 
-The Tang Primer 20K is made by Sipeed and available from:
-- [AliExpress (Sipeed official store)](https://aliexpress.com)
-- Amazon
-- Various electronics distributors
+The Tang Primer 20K is made by Sipeed. **We recommend buying it directly from the [Sipeed Store on AliExpress](https://www.aliexpress.us/item/3256804466994057.html).** Prices there have generally been lower than from resellers on Amazon and other marketplaces. We don't sell or resell the module, so purchase, shipping and returns are handled by the seller you buy from.
 
-Approximate price: $25–35 USD.
+:::warning[Buy the right board]
+You need the **Tang Primer 20K core module**: the SO-DIMM board with the Gowin GW2A-LV18 FPGA. It is not the **Tang Nano 20K**, and you don't need a carrier board. The **20K Dock kit** includes the same core module plus a dock board and cables that the Retrocade doesn't use. It is a fine choice if it is cheaper than the module alone. On the AliExpress listing, choose the **20K Core Board** or **20K Dock Kits** bundle option.
+:::
+
+Prices on the Sipeed Store change often and vary by country and promotion. In early November 2026 the module alone was about $46, and new-shopper promotions (limited to one per new account) were much lower. Check the store for the current price.
 
 ---
 

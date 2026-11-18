@@ -13,8 +13,8 @@ description: Take a blank (or broken) board to a working Retrocade using only
 **In this lesson you'll:**
 
 - Take a blank (or broken) board to a working Retrocade using only the Board Recovery web page
-- Know what each of the page's four steps puts on the board
-- Pick the right serial port when the browser asks
+- Know what each of the page's three steps puts on the board
+- Start from BOOT mode and pick the right serial port when the browser asks
 
 ## Watch
 
@@ -34,9 +34,13 @@ This lesson covers these sections of the docs:
 ## Do it
 
 1. Insert a FAT-formatted microSD card.
-2. Connect the board to your computer with a USB **data** cable.
+2. Hold the ESP32's **BOOT** button while you plug the board into your computer with a USB **data**
+   cable. That puts the board straight into its programming mode.
 3. Open [papilioworks.com/board-recovery](https://papilioworks.com/board-recovery/) in
-   Chrome or Edge, and work through Steps 1-4 on the page.
+   Chrome or Edge.
+4. In **Step 1**, type your WiFi name and password (optional, 2.4 GHz only), click **Connect USB**,
+   pick the first port in the list, and click **Install / Recover Board**.
+5. Work through **Step 2** (A2600 core) and **Step 3** (Papilio Splash ROM).
 
 ## You're done when...
 
@@ -46,28 +50,29 @@ The Papilio Splash ROM is running on your TV, and the page shows your board's IP
 
 1. The browser lists two serial ports for your board. Which one do you pick?
    - a) The higher-numbered one
-   - b) The lower-numbered one
+   - b) The first one in the list; if it can't connect, try the other
    - c) Either; it doesn't matter
 2. Where do your WiFi network name and password go?
    - a) To a Papilio Works server, which forwards them to the board
-   - b) Written to the board's flash over USB
+   - b) Written to the board's flash over USB, during Step 1
    - c) Stored in your browser
 3. What does "Load Papilio Splash ROM" need before it works?
    - a) Only a USB connection
-   - b) A FAT-formatted SD card in the board, and the board's IP from the WiFi step
+   - b) A FAT-formatted SD card in the board, and the board's IP from WiFi
    - c) The Papilio Loader desktop app
 
 <details>
 <summary>Show answers</summary>
 
-- Question 1: b) The lower-numbered one
-- Question 2: b) Written to the board's flash over USB
-- Question 3: b) A FAT-formatted SD card in the board, and the board's IP from the WiFi step
+- Question 1: b) The first one in the list; if it can't connect, try the other
+- Question 2: b) Written to the board's flash over USB, during Step 1
+- Question 3: b) A FAT-formatted SD card in the board, and the board's IP from WiFi
 
 </details>
 
 ## If something went wrong
 
 See the troubleshooting table in the docs' Flash the Firmware page, and the Troubleshooting
-Toolkit module. If the board won't respond at all, hold **BOOT** while plugging in USB to
-start it in factory boot mode, then begin again at Step 1.
+Toolkit module. If the install says the board didn't respond, unplug the USB cable, hold **BOOT**
+while plugging it back in, and click **Install / Recover Board** again. If you skipped WiFi in
+Step 1, add it later under **Advanced tools** at the bottom of the page.

@@ -39,19 +39,23 @@ The **[browser-based Board Recovery page](https://papilioworks.com/board-recover
   />
 </div>
 
-The [browser-based Board Recovery page](https://papilioworks.com/board-recovery/) is the easiest way to prepare a blank board. It downloads the current Papilio ESP32 Bootloader, FPGA Companion ESP32 app, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow:
+The [browser-based Board Recovery page](https://papilioworks.com/board-recovery/) is the easiest way to prepare a blank board. It downloads the current Papilio ESP32 Bootloader, FPGA Companion ESP32 app, A2600 Retrocade FPGA core, and Papilio Splash ROM from their published releases and performs the complete first-time flow in three steps:
 
-1. If needed, hold **BOOT** while powering the ESP32-S3 over USB to enter factory boot mode.
+1. Hold the **BOOT** button on the ESP32-S3 while you plug in the USB cable. This is the most reliable way to start: it puts the board straight into its programming mode, so the page does not have to reset it.
 2. Open the Board Recovery page in Chrome or Edge.
-3. Click **Connect USB**, select the lower-numbered of the two serial ports shown for the Retrocade's ESP32, then click **Install / Recover Board**.
-4. Wait for **ESP32 flashed**. The board reboots and its USB port re-enumerates; the page automatically re-acquires the new port.
-5. Enter WiFi credentials and click **Send to Board**. If it reports *Send failed*, unplug and replug the USB cable, click **Find My IP**, select the port, and click **Send to Board** again.
-6. **Step 3 — Install the A2600 core:** click **Install Latest A2600 Core**. The page uses WiFi when the board IP is known, or USB serial when it is not.
-7. **Step 4 — Load a demo game ROM:** insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The page uploads the ROM to the SD card and starts it on the A2600 core.
+3. **Step 1 — Install / Recover ESP32:** if you want the board on WiFi, type your network name and password (2.4 GHz only; optional). Click **Connect USB**, select the first of the serial ports shown for the Retrocade's ESP32 (if it can't connect, try the other one), then click **Install / Recover Board**. The WiFi settings are written to the board during the install, over USB, and never sent over the internet. When it finishes, the board restarts into FPGA-Companion, joins your network, and the page shows its IP address.
+4. **Step 2 — Install the A2600 core:** click **Install Latest A2600 Core**. The page uses WiFi when the board IP is known, or USB serial when it is not.
+5. **Step 3 — Load a demo game ROM:** insert a FAT-formatted SD card, then click **Load Papilio Splash ROM**. The page uploads the ROM to the SD card and starts it on the A2600 core.
 
-When you connect the Retrocade over USB, the ESP32 usually appears as two serial ports. If you are not sure which ports belong to the board, unplug it and note which ports disappear, then plug it back in and watch for those ports to return. Select the lower-numbered port.
+When you connect the Retrocade over USB, the ESP32 usually appears as two serial ports. If you are not sure which ports belong to the board, unplug it and note which ports disappear, then plug it back in and watch for those ports to return. Select the first port listed; if the page reports that it can't connect, try the other one.
 
-The ROM upload requires WiFi and a known device IP from Step 2, as well as a FAT-formatted SD card.
+The ROM upload requires WiFi and a known device IP (from Step 1, or from **Advanced tools**), as well as a FAT-formatted SD card.
+
+**Advanced tools** (collapsed at the bottom of the page): add your WiFi later if you skipped it in Step 1, **Find My IP** and **Use This IP** for a board that is already on WiFi, and **Restart Board (USB)**.
+
+:::note[The video shows the earlier page]
+The video above was recorded before the page was simplified. It shows four steps, with WiFi as its own step. The page now has three: your WiFi goes into Step 1, the A2600 core is Step 2, and the ROM is Step 3. An updated video is planned.
+:::
 
 The recovery image writes the factory bootloader and a compatible Companion application in one USB operation. Use it for a new board or to migrate a board that still uses the older application-centered layout.
 
@@ -84,7 +88,7 @@ Papilio Loader can do more than first-time setup, including finding boards on yo
 4. Use the migration image from the browser-based Getting Started flow, or from the [FPGA-Companion v2.2.1 release](https://github.com/Papilio-Retrocade/FPGA-Companion/releases/tag/v2.2.1) (`papilio-migration-v2.2.1-merged.bin`)
 5. In Papilio Loader, choose the migration `.bin` on the **ESP32 Flash** card. Loader recognizes the merged image and writes it from the start of flash.
 6. Click **Program ESP32**, authorize the board's USB port if prompted, and wait for it to finish.
-7. Configure WiFi in Step 2 of the [Board Recovery page](https://papilioworks.com/board-recovery/), and use Papilio Loader for future updates.
+7. Add your WiFi under **Advanced tools** on the [Board Recovery page](https://papilioworks.com/board-recovery/), and use Papilio Loader for future updates.
 
 ---
 
@@ -114,7 +118,8 @@ If you see nothing on screen, check that the HDMI cable is connected to the **Re
 | Flash fails with "port not found" | Check Device Manager (Windows) or `ls /dev/tty*` (Linux/Mac) for the correct port |
 | Nothing on HDMI after flash | Confirm ESP32-S3 is in the correct header orientation |
 | Green LED doesn't blink | Re-flash the migration image from the start of flash. Confirm you used the Retrocade-specific migration image, not an app-only FPGA-Companion build |
-| WiFi setup says the serial port cannot be opened | Wait for the board to finish rebooting and USB re-enumeration, then retry **Send to Board** |
+| Step 1 says the board did not respond, or *Failed to set control signals* | The page could not reset the board into its programming mode. Unplug the USB cable, hold **BOOT** while plugging it back in, then click **Install / Recover Board** again. If the page tells you to reload, reload it first |
+| The board looks idle after the install, or has no WiFi | Skipped WiFi in Step 1? Add it under **Advanced tools**. To restart the board, use **Restart Board (USB)** there, or unplug and replug the USB cable |
 
 ---
 

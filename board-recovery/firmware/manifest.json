@@ -9,7 +9,7 @@
     "companionApp": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.2/fpga_companion-v2.2.2.bin",
     "companionMigration": "https://github.com/Papilio-Retrocade/FPGA-Companion/releases/download/v2.2.2/papilio-migration-v2.2.2-merged.bin"
   },
-  "fetchedAt": "2026-11-20T19:35:26.200Z",
+  "fetchedAt": "2026-11-21T06:05:40.994Z",
   "components": {
     "bootloader": {
       "name": "Papilio ESP Bootloader",

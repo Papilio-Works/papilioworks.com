@@ -26,11 +26,11 @@ The **[browser-based Board Recovery page](https://papilioworks.com/board-recover
 
 ## Recommended: Browser-Based Setup
 
-**Watch: Set Up a Board with the Board Recovery Page (2 minutes)**
+**Watch: Set Up a Board with the Board Recovery Page (2.5 minutes)**
 
 <div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '8px', marginBottom: '1rem'}}>
   <iframe
-    src="https://www.youtube-nocookie.com/embed/sPk5SLPhIqc"
+    src="https://www.youtube-nocookie.com/embed/I4WTLw1x1jg"
     title="Set Up a Papilio Retrocade with One Web Page"
     style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0}}
     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
